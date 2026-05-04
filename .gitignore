@@ -1,0 +1,34 @@
+# Next.js
+.next/
+out/
+
+# Node
+node_modules/
+npm-debug.log*
+
+# 빌드 산출물
+build/
+dist/
+
+# 환경 변수
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# 에디터
+.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# TypeScript
+*.tsbuildinfo
+
+# 로컬 전용 Claude 설정
+.claude/settings.local.json
