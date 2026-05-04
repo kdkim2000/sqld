@@ -1,0 +1,229 @@
+# WORKPLAN — SQLD 사이트 구축 실행 계획
+
+> **이 문서가 단일 진입점입니다.** 처음 시작하는 사람은 위에서부터 차례대로 따라가세요.
+> 각 Phase 끝의 "검증 게이트"를 통과해야 다음 Phase로 진행합니다.
+
+---
+
+## 0. 시작 전 체크리스트
+
+```bash
+node --version    # 18.0 이상 필요
+npm --version
+git --version
+```
+
+- [ ] `CLAUDE.md` 읽음
+- [ ] `docs/PRD.md` 시험 구조·핵심 기능 확인
+- [ ] `docs/ARCHITECTURE.md` 데이터 모델·페이지 흐름 확인
+- [ ] `docs/AGENTS.md` 에이전트 분업 구조 확인
+- [ ] `/status` 명령으로 시스템 준비 상태 확인
+
+---
+
+## Phase 0 — Scaffold (단독)
+
+**목표**: `npm run dev`로 빈 페이지가 뜨는 Next.js 프로젝트  
+**예상 소요**: 10~15분
+
+### 실행
+```
+/run-agent 1
+```
+
+### 검증 게이트
+| 항목 | 명령 / 확인 |
+|------|-----------|
+| 프로젝트 골격 생성 | `package.json`, `tsconfig.json`, `tailwind.config.js` 존재 |
+| 개발 서버 동작 | `npm run dev` → localhost:3000 200 OK |
+| 린트 통과 | `npm run lint` → 0 errors |
+| 디렉토리 골격 | `data/`, `components/`, `lib/`, `context/`, `types/` 생성됨 |
+
+### 통과 시 → Phase 1로 진행
+
+---
+
+## Phase 1 — Content + Foundation (병렬, 권장 순서 있음)
+
+**목표**: 데이터(JSON·MD) + 공유 레이어(types·lib·context) 완성  
+**예상 소요**: 30~60분
+
+### ⚠️ 권장 순서
+1. **먼저** `/run-agent 3` (Foundation Builder)로 `types/index.ts` 5분 내 작성 → 타입 계약 확정
+2. **그 다음** `/run-agent 2` (Content Writer) 시작 — Foundation 작업과 병렬 진행
+
+> 두 에이전트 모두 `docs/ARCHITECTURE.md`의 Question 인터페이스를 참조하므로 완전 병렬도 가능. 그러나 타입을 코드로 먼저 박아두면 AI 간 해석 차이가 줄어듭니다.
+
+### 실행
+```
+# Foundation 먼저 시작 (types/index.ts만이라도 빠르게)
+/run-agent 3
+
+# Foundation의 types/index.ts 작성 확인 후
+/run-agent 2
+```
+
+### 검증 게이트
+| 항목 | 명령 / 확인 |
+|------|-----------|
+| Foundation 파일 5개 | `types/index.ts`, `lib/{questions,theory,progress}.ts`, `context/ProgressContext.tsx` |
+| 타입 검사 통과 | `npx tsc --noEmit` → 0 errors |
+| 데이터 파일 10개 | `data/questions/*.json` 5개 + `data/theory/*.md` 5개 |
+| 데이터 검증 통과 | `/validate-data` → 통과 |
+| 자동 저널 항목 | `[Phase 1] [foundation-builder] — ProgressContext` 기록 확인 |
+
+### 통과 시 → Phase 2로 진행
+
+---
+
+## Phase 2 — Layout (단독)
+
+**목표**: 모든 페이지가 공유할 레이아웃 쉘  
+**예상 소요**: 20~30분
+
+### 실행
+```
+/run-agent 4
+```
+
+### 검증 게이트
+| 항목 | 명령 / 확인 |
+|------|-----------|
+| 레이아웃 파일 4개 | `components/layout/{Layout,Sidebar,Header}.tsx`, `pages/_app.tsx` |
+| Provider 연결 | `pages/_app.tsx`에 `<ProgressProvider><Layout>` 구조 |
+| 모바일 햄버거 | 375px 뷰포트에서 사이드바 토글 동작 |
+| 자동 저널 항목 | `[Phase 2] [layout-builder] — 공통 레이아웃` 기록 확인 |
+
+### 통과 시 → Phase 3로 진행
+
+---
+
+## Phase 3 — Quiz + Theory (완전 병렬)
+
+**목표**: 문제풀이 5개 페이지 + 이론 학습 2개 페이지  
+**예상 소요**: 60~90분
+
+### 실행 (별도 세션 또는 동시 호출)
+```
+/run-agent 5    # Quiz Builder
+/run-agent 6    # Theory Builder
+```
+
+### 검증 게이트
+| 항목 | 명령 / 확인 |
+|------|-----------|
+| Quiz 컴포넌트 4개 | `components/quiz/{QuestionCard,AnswerFeedback,QuizNavigator,ExamTimer}.tsx` |
+| Quiz 페이지 5개 | `pages/quiz/{index,exam,wrong,bookmarks}.tsx`, `pages/quiz/chapter/[chapterId].tsx` |
+| Theory 컴포넌트 2개 | `components/theory/{TheoryContent,ChapterCard}.tsx` |
+| Theory 페이지 2개 | `pages/theory/index.tsx`, `pages/theory/[chapterId].tsx` |
+| 흐름 동작 | `/quiz/chapter/part2_ch1` → 보기 선택 → 정답 피드백 → localStorage 반영 |
+| SSG 빌드 | `npm run build` → 5+5 챕터 경로 사전 생성 |
+| 자동 저널 항목 | `[Phase 3] [quiz-builder]`, `[Phase 3] [theory-builder]` 기록 확인 |
+
+### 통과 시 → Phase 4로 진행
+
+---
+
+## Phase 4 — Dashboard (단독, Phase 3 완료 필수)
+
+**목표**: 학습 현황 메인 페이지  
+**예상 소요**: 20~30분
+
+### 실행
+```
+/run-agent 7
+```
+
+### 검증 게이트
+| 항목 | 명령 / 확인 |
+|------|-----------|
+| 대시보드 컴포넌트 4개 | `components/dashboard/{ProgressChart,WeakChapterList,RecentWrongList,ExamHistoryCard}.tsx` |
+| 메인 페이지 | `pages/index.tsx` |
+| 빈 상태 표시 | localStorage 비어있을 때 적절한 안내 메시지 |
+| 자동 저널 항목 | `[Phase 4] [dashboard-builder] — 대시보드` 기록 확인 |
+
+### 통과 시 → Phase 5로 진행
+
+---
+
+## Phase 5 — QA (단독, 모든 Phase 완료 필수)
+
+**목표**: 전체 통합 검증 + 버그 수정 + 첫 회고  
+**예상 소요**: 15~30분
+
+### 실행
+```
+/run-agent 8
+/build-check     # tsc + lint + build 통합 검증
+/validate-data   # 데이터 최종 점검
+/retrospect      # LESSONS.md 첫 회고 합성
+```
+
+### 검증 게이트
+| 항목 | 명령 / 확인 |
+|------|-----------|
+| 타입 검사 | `npx tsc --noEmit` → 0 errors |
+| 린트 검사 | `npm run lint` → 0 errors |
+| 빌드 성공 | `npm run build` → exit 0 |
+| 데이터 검증 | `/validate-data` → 통과 |
+| SSR 가드 | `localStorage` 모든 접근에 `typeof window !== 'undefined'` 가드 적용 |
+| 회고 생성 | `docs/journal/LESSONS.md` 업데이트됨 |
+
+### 통과 시 → 배포로 진행
+
+---
+
+## 배포
+
+```bash
+git init
+git add .
+git commit -m "feat: SQLD 시험 준비 사이트 MVP"
+git remote add origin <github-repo-url>
+git push -u origin main
+
+# Vercel: GitHub 연동 → import → 자동 배포
+```
+
+---
+
+## 진행 추적
+
+`/status` 명령으로 언제든 현재 상태 확인:
+- 어느 Phase 진행 중인지
+- 어느 에이전트가 완료됐는지
+- 다음 액션은 무엇인지
+
+---
+
+## 트러블슈팅
+
+### "에이전트가 실패하거나 막혔어요"
+1. `/status` — 현재 상태 확인
+2. `/log` — 문제 상황 기록 (나중 회고용)
+3. 해당 에이전트 산출물 수동 검토 → 부분 수정 또는 `/run-agent N` 재실행
+
+### "빌드가 깨졌어요"
+1. `/build-check` — 어느 단계(tsc/lint/build)에서 깨졌는지 확인
+2. `/run-agent 8` (QA) — 자동 수정 시도
+3. 그래도 안 되면 → 가장 최근 변경 파일 `git diff` 또는 Edit 되돌리기
+
+### "JSON 데이터에 오류가 있어요"
+1. `/validate-data` — 정확한 위치·이유 확인
+2. 해당 파일 직접 수정 또는 `/add-question` 으로 추가
+
+### "Phase를 건너뛰고 싶어요"
+- **하지 마세요.** 각 Phase는 다음 Phase의 전제 조건을 만듭니다.
+- 부분 작업이 필요하면 해당 에이전트의 system prompt(`docs/AGENTS.md`)를 참조해 수동 진행.
+
+---
+
+## 진행 후 회고
+
+각 Phase 완료 시:
+- 자동 저널 마일스톤 기록됨 (훅이 자동 처리)
+- 의외의 발견·결정·문제는 `/log` 로 직접 기록
+
+전체 완료 후:
+- `/retrospect` 로 `LESSONS.md` 합성
+- 다음 프로젝트의 출발점이 됩니다
