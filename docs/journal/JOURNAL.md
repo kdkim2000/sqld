@@ -46,3 +46,10 @@
 ---
 
 <!-- 이 아래로 새 항목이 자동 또는 /log 명령으로 추가됩니다 -->
+
+### [2026-05-05 01:00] [Phase 0] [Orchestrator] — PDF Extractor 에이전트 추가
+
+**작업**: `docs/contents/` PDF 파일 기반 콘텐츠 자동 생성 에이전트(Agent 9) 설계 및 추가. `.claude/agents/pdf-extractor.md` 신규 작성. `docs/AGENTS.md`, `docs/WORKPLAN.md`, `CLAUDE.md` 업데이트.
+**결정**: content-writer(Agent 2) 대체가 아닌 우선 실행 에이전트로 포지셔닝. PDF 있을 때 → Agent 9, 없거나 보완 필요 → Agent 2. 두 에이전트가 동일 소유 파일을 공유하므로 대체 관계 명시.
+**교훈**: Read 도구가 PDF를 직접 읽을 수 있으므로, 별도 파이프라인 없이 에이전트 프롬프트에 소스 매핑만 명확히 정의하면 PDF 기반 콘텐츠 생성이 가능하다.
+**바이브**: ⚡고에너지

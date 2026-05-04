@@ -50,16 +50,27 @@ git --version
 
 ### ⚠️ 권장 순서
 1. **먼저** `/run-agent 3` (Foundation Builder)로 `types/index.ts` 5분 내 작성 → 타입 계약 확정
-2. **그 다음** `/run-agent 2` (Content Writer) 시작 — Foundation 작업과 병렬 진행
+2. **그 다음** 콘텐츠 에이전트 실행 (Foundation 작업과 병렬 가능)
 
-> 두 에이전트 모두 `docs/ARCHITECTURE.md`의 Question 인터페이스를 참조하므로 완전 병렬도 가능. 그러나 타입을 코드로 먼저 박아두면 AI 간 해석 차이가 줄어듭니다.
+**콘텐츠 에이전트 선택 기준**
+
+| 상황 | 실행 명령 | 비고 |
+|------|---------|------|
+| `docs/contents/` 에 PDF 파일 있음 ✅ | `/run-agent 9` | PDF 원본 기반 자동 생성 — **권장** |
+| PDF 없거나 보완 필요 | `/run-agent 2` | 수동/AI 생성 |
+
+> PDF Extractor(Agent 9)가 우선입니다. PDF를 읽어 이론 마크다운과 문제 JSON을 직접 추출하므로 정확도가 높습니다.  
+> Agent 9 실행 후 품질 보완이 필요한 챕터만 `/run-agent 2`로 추가 작업하세요.
 
 ### 실행
 ```
 # Foundation 먼저 시작 (types/index.ts만이라도 빠르게)
 /run-agent 3
 
-# Foundation의 types/index.ts 작성 확인 후
+# PDF가 있을 때 (docs/contents/ 폴더 확인)
+/run-agent 9
+
+# PDF가 없을 때 또는 보완 시
 /run-agent 2
 ```
 
@@ -71,6 +82,7 @@ git --version
 | 데이터 파일 10개 | `data/questions/*.json` 5개 + `data/theory/*.md` 5개 |
 | 데이터 검증 통과 | `/validate-data` → 통과 |
 | 자동 저널 항목 | `[Phase 1] [foundation-builder] — ProgressContext` 기록 확인 |
+| (Agent 9 실행 시) PDF 소스 활용 | `data/theory/*.md` 이론 파일에 `## 출제 포인트` 섹션 존재 |
 
 ### 통과 시 → Phase 2로 진행
 

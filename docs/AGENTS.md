@@ -13,7 +13,8 @@ Phase 0 ────────────────────────
                         │
           ┌─────────────┴──────────────┐
 Phase 1   │                            │  (병렬)
-      [Content]                  [Foundation]
+  [PDF Extract]                  [Foundation]    ← PDF 있을 때
+  [Content]  ←────────────────── (PDF 없을 때, 대체 실행)
           │                            │
           └─────────────┬──────────────┘
                         │
@@ -93,6 +94,45 @@ pages/_document.tsx
 npm run dev    # 정상 실행
 npm run lint   # 0 errors
 ```
+
+---
+
+### Agent 9 — PDF Extractor (PDF 기반 콘텐츠 추출)
+
+**한 줄 요약**: `docs/contents/` 의 SQLD 원본 PDF를 읽어 이론 마크다운과 문제 JSON을 자동 생성한다.
+
+**책임**
+- 이론 PDF 5개를 `data/theory/*.md`로 변환 (구조 보존, SQL 코드블록, 출제포인트 섹션 포함)
+- 예상문제 PDF 2개에서 문제를 추출하여 챕터별 `data/questions/*.json`으로 분배
+- PDF 문항 부족 시 PDF 이론 내용을 바탕으로 유사 문제 직접 생성
+
+**소유 파일**
+```
+data/theory/          ← content-writer와 동일 (대체 관계)
+data/questions/       ← content-writer와 동일 (대체 관계)
+```
+
+**PDF ↔ 출력 매핑**
+```
+Part_2_SQLD_Chapter_1_데이터모델링의이해.pdf  →  data/theory/part1_ch1.md
+Part_2_SQLD_Chapter_2_데이터모델과성능.pdf    →  data/theory/part1_ch2.md
+Part_2_SQLD_Chapter_3_SQL기본.pdf             →  data/theory/part2_ch1.md
+Part_2_SQLD_Chapter_4_SQL활용.pdf             →  data/theory/part2_ch2.md
+Part_2_SQLD_Chapter_5_SQL 최적화 기본 원리.pdf →  data/theory/part2_ch3.md
+Part_3_SQLD출제예상문제_1회.pdf               →  data/questions/*.json (전 챕터 분배)
+Part_3_SQLD출제예상문제_2회.pdf               →  data/questions/*.json (전 챕터 분배)
+```
+
+**선행 조건**: Agent 1 완료 (디렉토리 구조)
+
+**출력**: 총 120문항 이상 + 5개 이론 챕터 파일 (PDF 원본 기반)
+
+**검증 기준**
+- 이론 파일: `## ` 섹션 3개 이상
+- JSON: 유효한 형식, id 중복 없음, answer 0~3, explanation 50자 이상
+- `/validate-data` 통과
+
+> **content-writer와 관계**: `docs/contents/` PDF가 존재할 때는 Agent 9를 먼저 실행한다. PDF가 없거나 추가 보완이 필요할 때 Agent 2(content-writer)를 사용한다.
 
 ---
 
@@ -352,7 +392,8 @@ npm run build       # 성공 (exit 0)
 | 제공자 | 수신자 | 계약 내용 |
 |--------|--------|---------|
 | Agent 1 (Scaffold) | 전체 | `npm run dev` 실행 가능한 프로젝트 골격 |
-| Agent 2 (Content) | Agent 6 (Theory), Agent 5 (Quiz) | `data/` 파일 존재 + ID 규칙 준수 |
+| Agent 9 (PDF Extractor) | Agent 6 (Theory), Agent 5 (Quiz) | `data/` 파일 존재 + ID 규칙 준수 (PDF 기반) |
+| Agent 2 (Content) | Agent 6 (Theory), Agent 5 (Quiz) | `data/` 파일 존재 + ID 규칙 준수 (수동 생성, Agent 9 대체) |
 | Agent 3 (Foundation) | Agent 4, 5, 6, 7 | `types/index.ts` export 타입, `useProgress()` hook |
 | Agent 4 (Layout) | Agent 5, 6, 7 | `<Layout>` 컴포넌트, `_app.tsx` Provider 연결 완료 |
 | Agent 5 (Quiz) | Agent 7 (Dashboard) | `QuizMode` 타입, `ProgressContext` 상태 구조 확정 |

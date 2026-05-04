@@ -1,0 +1,402 @@
+[
+  {
+    "id": "p2c2_001",
+    "part": 2,
+    "chapter": "2",
+    "content": "집합 연산자 중 두 결과를 합치되 중복을 제거하는 것은?",
+    "options": [
+      "UNION ALL",
+      "UNION",
+      "INTERSECT",
+      "MINUS"
+    ],
+    "answer": 2,
+    "explanation": "UNION은 두 SELECT 결과의 합집합을 반환하며 중복 행을 제거한다. UNION ALL은 중복 행을 포함한 모든 행을 반환한다. INTERSECT는 두 결과의 교집합(공통 행), MINUS(Oracle)/EXCEPT(SQL Server)는 차집합을 반환한다.",
+    "tags": ["집합연산자", "UNION"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c2_002",
+    "part": 2,
+    "chapter": "2",
+    "content": "집합 연산자 사용 시 주의사항으로 올바르지 않은 것은?",
+    "options": [
+      "각 SELECT의 컬럼 수가 동일해야 한다",
+      "각 컬럼의 데이터 타입이 호환되어야 한다",
+      "컬럼명은 첫 번째 SELECT의 컬럼명을 기준으로 한다",
+      "ORDER BY는 각 SELECT 마다 사용할 수 있다"
+    ],
+    "answer": 4,
+    "explanation": "집합 연산자를 사용할 때 ORDER BY는 마지막에 한 번만 사용해야 한다. 각 SELECT에 ORDER BY를 사용하면 오류가 발생한다. 컬럼 수는 동일해야 하고, 데이터 타입은 호환되어야 하며, 컬럼명은 첫 번째 SELECT 기준으로 결정된다.",
+    "tags": ["집합연산자", "UNION주의사항"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_003",
+    "part": 2,
+    "chapter": "2",
+    "content": "Oracle 계층형 쿼리에서 START WITH의 역할은?",
+    "options": [
+      "계층 구조에서 리프 노드의 조건을 지정한다",
+      "계층 구조에서 루트 노드의 시작 조건을 지정한다",
+      "계층의 최대 레벨 수를 지정한다",
+      "부모-자식 간의 관계 컬럼을 지정한다"
+    ],
+    "answer": 2,
+    "explanation": "START WITH는 계층 구조의 시작점(루트 노드)을 정의하는 조건이다. 예를 들어 'START WITH 관리자번호 IS NULL'은 관리자가 없는 최상위 노드부터 시작함을 의미한다. 부모-자식 관계는 CONNECT BY PRIOR로 정의한다.",
+    "tags": ["계층형쿼리", "START WITH"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c2_004",
+    "part": 2,
+    "chapter": "2",
+    "content": "계층형 쿼리에서 LEVEL의 의미로 올바른 것은?",
+    "options": [
+      "계층 구조에서 전체 레벨의 수를 나타낸다",
+      "현재 행의 계층 레벨을 나타내며 루트 노드는 1이다",
+      "현재 행이 몇 번째 자식인지를 나타낸다",
+      "현재 행의 부모 노드의 레벨을 나타낸다"
+    ],
+    "answer": 2,
+    "explanation": "LEVEL은 계층형 쿼리에서 현재 행의 계층 레벨을 나타내는 가상 컬럼이다. 루트 노드(START WITH 조건에 해당하는 행)의 LEVEL 값은 1이며, 자식 노드는 2, 손자 노드는 3 등 계층이 깊어질수록 1씩 증가한다.",
+    "tags": ["계층형쿼리", "LEVEL"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c2_005",
+    "part": 2,
+    "chapter": "2",
+    "content": "RANK(), DENSE_RANK(), ROW_NUMBER() 함수에서 같은 값이 2개 있을 때 순위가 다르게 처리되는 경우로 올바른 것은?\n\n(급여: 5000, 5000, 3000, 2000)",
+    "options": [
+      "RANK: 1,1,2,3 / DENSE_RANK: 1,1,2,3 / ROW_NUMBER: 1,2,3,4",
+      "RANK: 1,1,3,4 / DENSE_RANK: 1,1,2,3 / ROW_NUMBER: 1,2,3,4",
+      "RANK: 1,2,3,4 / DENSE_RANK: 1,1,2,3 / ROW_NUMBER: 1,1,2,3",
+      "RANK: 1,1,2,3 / DENSE_RANK: 1,1,3,4 / ROW_NUMBER: 1,2,3,4"
+    ],
+    "answer": 2,
+    "explanation": "RANK()는 동일 순위에 같은 번호를 부여하고 다음 순위를 건너뛴다(1,1,3,4). DENSE_RANK()는 동일 순위에 같은 번호를 부여하고 다음 순위를 연속으로 부여한다(1,1,2,3). ROW_NUMBER()는 동일값이라도 순차적으로 고유 번호를 부여한다(1,2,3,4).",
+    "tags": ["윈도우함수", "RANK", "DENSE_RANK", "ROW_NUMBER"],
+    "difficulty": "상"
+  },
+  {
+    "id": "p2c2_006",
+    "part": 2,
+    "chapter": "2",
+    "content": "윈도우 함수의 PARTITION BY 절의 역할로 올바른 것은?",
+    "options": [
+      "전체 결과를 정렬하는 역할을 한다",
+      "윈도우 함수의 계산 범위를 그룹별로 나누는 역할을 한다",
+      "중복 행을 제거하는 역할을 한다",
+      "GROUP BY처럼 결과 행의 수를 줄이는 역할을 한다"
+    ],
+    "answer": 2,
+    "explanation": "PARTITION BY는 윈도우 함수를 그룹별로 독립적으로 적용하기 위한 분할 기준이다. GROUP BY와 달리 PARTITION BY는 결과 행의 수를 줄이지 않고 각 행에 그룹별 집계 결과를 추가한다. 예를 들어 PARTITION BY 부서코드를 사용하면 부서별로 독립적으로 순위/집계가 계산된다.",
+    "tags": ["윈도우함수", "PARTITION BY"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_007",
+    "part": 2,
+    "chapter": "2",
+    "content": "LAG 함수에 대한 설명으로 올바른 것은?",
+    "options": [
+      "현재 행보다 이후 행의 값을 반환한다",
+      "현재 행보다 이전 행의 값을 반환한다",
+      "파티션 내 첫 번째 행의 값을 반환한다",
+      "파티션 내 마지막 행의 값을 반환한다"
+    ],
+    "answer": 2,
+    "explanation": "LAG(컬럼, n, 기본값)은 현재 행에서 n행 이전의 값을 반환한다. 기본값은 이전 행이 없을 때 반환할 값이다. 이후 행의 값을 반환하는 것은 LEAD 함수이다. 첫 번째 행은 FIRST_VALUE, 마지막 행은 LAST_VALUE 함수를 사용한다.",
+    "tags": ["윈도우함수", "LAG"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c2_008",
+    "part": 2,
+    "chapter": "2",
+    "content": "ROLLUP에 대한 설명으로 올바른 것은?",
+    "options": [
+      "지정된 컬럼의 모든 조합에 대한 소계를 생성한다",
+      "계층적 소계를 생성하여 합계까지 나타낸다",
+      "지정된 특정 그룹 조합만 선택하여 집계한다",
+      "ROLLUP(A, B)와 ROLLUP(B, A)의 결과는 항상 같다"
+    ],
+    "answer": 2,
+    "explanation": "ROLLUP은 계층적 소계를 생성한다. ROLLUP(A, B)는 (A,B), (A), () 3가지 그룹을 생성하여 상세→소계→총계 순으로 나타낸다. 모든 조합의 소계는 CUBE, 특정 조합만은 GROUPING SETS이다. ROLLUP(A, B)와 ROLLUP(B, A)는 결과가 다를 수 있다.",
+    "tags": ["그룹함수", "ROLLUP"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_009",
+    "part": 2,
+    "chapter": "2",
+    "content": "CUBE(A, B) 실행 시 생성되는 그룹의 수는?",
+    "options": [
+      "2개",
+      "3개",
+      "4개",
+      "6개"
+    ],
+    "answer": 3,
+    "explanation": "CUBE(A, B)는 두 컬럼의 모든 가능한 조합의 소계를 생성한다. (A,B), (A), (B), () 총 4가지(2^2=4)의 그룹이 생성된다. ROLLUP(A, B)는 3가지 그룹을 생성한다. 일반적으로 CUBE(n개 컬럼)은 2^n개의 그룹을 생성한다.",
+    "tags": ["그룹함수", "CUBE"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_010",
+    "part": 2,
+    "chapter": "2",
+    "content": "GROUPING() 함수의 반환값으로 올바른 것은?",
+    "options": [
+      "현재 행이 소계 행이면 0, 데이터 행이면 1을 반환한다",
+      "현재 행이 소계 행이면 1, 데이터 행이면 0을 반환한다",
+      "그룹의 개수를 반환한다",
+      "현재 그룹의 레벨을 반환한다"
+    ],
+    "answer": 2,
+    "explanation": "GROUPING(컬럼명) 함수는 해당 컬럼이 ROLLUP/CUBE/GROUPING SETS에 의해 소계 집계된 행이면 1을 반환하고, 실제 데이터 행이면 0을 반환한다. 이를 이용하여 소계 행에 '합계', '소계' 등의 레이블을 표시할 수 있다.",
+    "tags": ["그룹함수", "GROUPING"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_011",
+    "part": 2,
+    "chapter": "2",
+    "content": "뷰(View)에 대한 설명으로 올바르지 않은 것은?",
+    "options": [
+      "실제 데이터를 저장하지 않는 가상의 테이블이다",
+      "복잡한 쿼리를 단순화하여 사용할 수 있다",
+      "특정 컬럼만 노출하여 보안성을 높일 수 있다",
+      "뷰에 인덱스를 생성하면 조회 성능이 향상된다"
+    ],
+    "answer": 4,
+    "explanation": "일반 뷰는 실제 데이터를 저장하지 않는 가상 테이블로, 인덱스를 직접 생성할 수 없다. 뷰의 성능은 기반 테이블의 인덱스에 의존한다. 뷰는 실제 데이터를 저장하지 않고 SELECT 문만 저장하며, 복잡한 쿼리 단순화와 보안성 향상에 유리하다.",
+    "tags": ["뷰", "VIEW"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_012",
+    "part": 2,
+    "chapter": "2",
+    "content": "상관 서브쿼리(Correlated Subquery)의 특징으로 올바른 것은?",
+    "options": [
+      "외부 쿼리와 독립적으로 실행되며 결과가 고정된다",
+      "외부 쿼리의 각 행에 대해 서브쿼리가 반복 실행된다",
+      "FROM 절에만 사용할 수 있다",
+      "항상 단일 값만 반환한다"
+    ],
+    "answer": 2,
+    "explanation": "상관 서브쿼리는 외부 쿼리의 컬럼을 참조하기 때문에 외부 쿼리의 각 행마다 서브쿼리가 반복 실행된다. 외부 쿼리와 독립적으로 먼저 실행되는 것은 비상관 서브쿼리이다. 상관 서브쿼리는 WHERE 절, HAVING 절 등에서 사용될 수 있다.",
+    "tags": ["서브쿼리", "상관서브쿼리"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_013",
+    "part": 2,
+    "chapter": "2",
+    "content": "NOT IN 연산자를 사용할 때 서브쿼리 결과에 NULL이 포함되면 어떤 결과가 나타나는가?",
+    "options": [
+      "NULL을 제외하고 나머지 값으로 정상 처리된다",
+      "아무 행도 반환되지 않는다",
+      "오류가 발생한다",
+      "NULL은 자동으로 0으로 대체된다"
+    ],
+    "answer": 2,
+    "explanation": "NOT IN 연산자에서 서브쿼리 결과에 NULL이 포함되면 아무 행도 반환되지 않는다. 이는 NULL과의 비교 결과가 항상 UNKNOWN이 되기 때문이다. 예를 들어 'WHERE 컬럼 NOT IN (1, 2, NULL)'은 어떤 컬럼 값과 비교해도 UNKNOWN이 포함되어 조건이 항상 FALSE/UNKNOWN이 된다. 이 경우 NOT EXISTS를 사용하는 것이 안전하다.",
+    "tags": ["서브쿼리", "NOT IN", "NULL"],
+    "difficulty": "상"
+  },
+  {
+    "id": "p2c2_014",
+    "part": 2,
+    "chapter": "2",
+    "content": "WITH 절(Common Table Expression)에 대한 설명으로 올바른 것은?",
+    "options": [
+      "WITH 절은 영구적인 데이터베이스 객체를 생성한다",
+      "WITH 절은 복잡한 쿼리를 단계별로 분리하여 가독성을 향상시킨다",
+      "WITH 절은 FROM 절에서만 참조할 수 있다",
+      "WITH 절은 한 쿼리에서 한 번만 정의할 수 있다"
+    ],
+    "answer": 2,
+    "explanation": "WITH 절(CTE, Common Table Expression)은 복잡한 쿼리를 논리적 단위로 분리하여 가독성과 유지보수성을 향상시킨다. 임시 결과 집합으로 쿼리 실행 중에만 존재하며 영구 객체가 아니다. WITH 절에서 여러 CTE를 정의할 수 있으며, 이후 쿼리의 다양한 위치에서 참조할 수 있다.",
+    "tags": ["WITH절", "CTE"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_015",
+    "part": 2,
+    "chapter": "2",
+    "content": "계층형 쿼리에서 'CONNECT BY PRIOR 자식키 = 부모키'의 의미는?",
+    "options": [
+      "부모에서 자식 방향으로 내려가는 순방향 탐색이다",
+      "자식에서 부모 방향으로 올라가는 역방향 탐색이다",
+      "같은 레벨의 형제 노드를 탐색한다",
+      "리프 노드에서 루트 노드를 탐색한다"
+    ],
+    "answer": 1,
+    "explanation": "CONNECT BY PRIOR 자식키 = 부모키는 PRIOR가 자식 키에 붙어 있으므로, 현재 행의 자식 키가 이전(부모) 행의 부모 키와 같다는 의미로, 부모에서 자식 방향(하향식, Top-Down)으로 탐색한다. CONNECT BY PRIOR 부모키 = 자식키는 자식에서 부모 방향(상향식, Bottom-Up)으로 탐색한다.",
+    "tags": ["계층형쿼리", "CONNECT BY PRIOR"],
+    "difficulty": "상"
+  },
+  {
+    "id": "p2c2_016",
+    "part": 2,
+    "chapter": "2",
+    "content": "MERGE 문의 기능으로 올바른 것은?",
+    "options": [
+      "두 테이블을 하나의 테이블로 물리적으로 합친다",
+      "조건에 따라 INSERT, UPDATE를 하나의 문으로 처리한다",
+      "두 SELECT 결과를 합집합으로 합친다",
+      "분산된 테이블을 하나의 뷰로 합친다"
+    ],
+    "answer": 2,
+    "explanation": "MERGE 문(Oracle)은 소스 테이블을 기준으로 대상 테이블과 비교하여, 매칭되는 행이 있으면 UPDATE하고 없으면 INSERT하는 작업을 하나의 문장으로 처리한다. WHEN MATCHED THEN UPDATE, WHEN NOT MATCHED THEN INSERT 절을 사용한다. 두 결과를 합치는 것은 UNION이다.",
+    "tags": ["MERGE"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_017",
+    "part": 2,
+    "chapter": "2",
+    "content": "INTERSECT 연산자의 결과로 올바른 것은?\n\n(집합A: 1,2,3,4 / 집합B: 3,4,5,6)",
+    "options": [
+      "1,2,3,4,5,6",
+      "1,2",
+      "3,4",
+      "5,6"
+    ],
+    "answer": 3,
+    "explanation": "INTERSECT는 두 결과의 교집합을 반환한다. 집합A(1,2,3,4)와 집합B(3,4,5,6)의 공통 원소는 3,4이다. 합집합은 UNION(1,2,3,4,5,6), 차집합은 MINUS/A-B(1,2)이다.",
+    "tags": ["집합연산자", "INTERSECT"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c2_018",
+    "part": 2,
+    "chapter": "2",
+    "content": "윈도우 함수에서 ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW의 의미는?",
+    "options": [
+      "현재 행부터 마지막 행까지의 범위",
+      "파티션의 첫 번째 행부터 현재 행까지의 범위",
+      "현재 행의 앞뒤 1행씩을 포함한 범위",
+      "파티션 내 전체 행의 범위"
+    ],
+    "answer": 2,
+    "explanation": "ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW는 파티션의 첫 번째 행(UNBOUNDED PRECEDING)부터 현재 행(CURRENT ROW)까지의 범위를 지정한다. 이를 통해 누적 합계 등을 계산할 수 있다. UNBOUNDED FOLLOWING은 마지막 행까지를 의미한다.",
+    "tags": ["윈도우함수", "ROWS BETWEEN"],
+    "difficulty": "상"
+  },
+  {
+    "id": "p2c2_019",
+    "part": 2,
+    "chapter": "2",
+    "content": "GROUPING SETS에 대한 설명으로 올바른 것은?",
+    "options": [
+      "모든 가능한 컬럼 조합의 소계를 생성한다",
+      "지정한 특정 그룹 조합만 선택적으로 집계한다",
+      "ROLLUP과 동일한 결과를 항상 반환한다",
+      "단일 컬럼에 대한 집계만 가능하다"
+    ],
+    "answer": 2,
+    "explanation": "GROUPING SETS는 원하는 특정 그룹 조합만 선택하여 집계할 수 있다. 예를 들어 GROUPING SETS((부서코드, 직급), (부서코드))는 '부서+직급별'과 '부서별' 집계만 수행한다. ROLLUP과 동일하게 작성할 수 있지만 유연하게 원하는 조합만 지정할 수 있다.",
+    "tags": ["그룹함수", "GROUPING SETS"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_020",
+    "part": 2,
+    "chapter": "2",
+    "content": "계층형 쿼리에서 SYS_CONNECT_BY_PATH 함수의 역할은?",
+    "options": [
+      "루트 노드의 컬럼값을 반환한다",
+      "루트부터 현재 행까지의 경로를 문자열로 반환한다",
+      "현재 노드가 리프 노드인지 여부를 반환한다",
+      "현재 노드의 레벨을 반환한다"
+    ],
+    "answer": 2,
+    "explanation": "SYS_CONNECT_BY_PATH(컬럼, 구분자)는 루트 노드부터 현재 행까지의 계층 경로를 지정한 구분자로 연결하여 반환한다. 예를 들어 '회사/본부/팀' 형태의 경로를 만들 수 있다. 루트 노드 값은 CONNECT_BY_ROOT, 리프 여부는 CONNECT_BY_ISLEAF로 확인한다.",
+    "tags": ["계층형쿼리", "SYS_CONNECT_BY_PATH"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_021",
+    "part": 2,
+    "chapter": "2",
+    "content": "다음 중 뷰(View)에 대한 DML 실행 제한이 발생하는 경우는?",
+    "options": [
+      "단일 테이블에 기반한 단순 뷰에 UPDATE를 실행할 때",
+      "집계 함수를 포함한 뷰에 INSERT를 실행할 때",
+      "뷰에 정의된 컬럼만 조회할 때",
+      "뷰를 다른 뷰의 FROM 절에서 사용할 때"
+    ],
+    "answer": 2,
+    "explanation": "뷰에 집계 함수(SUM, AVG 등), GROUP BY, DISTINCT, 조인 등이 포함되면 DML(INSERT, UPDATE, DELETE) 실행이 제한된다. 집계 함수를 포함한 뷰는 기반 테이블의 특정 행과 1:1 대응이 불가능하기 때문에 INSERT/UPDATE/DELETE를 수행할 수 없다.",
+    "tags": ["뷰", "VIEW", "DML제한"],
+    "difficulty": "상"
+  },
+  {
+    "id": "p2c2_022",
+    "part": 2,
+    "chapter": "2",
+    "content": "NTILE(4) 함수를 100개 행에 적용하면 어떻게 분류되는가?",
+    "options": [
+      "100개 행을 4개씩 25그룹으로 분류한다",
+      "전체 행을 4개의 버킷으로 균등하게 분류한다",
+      "상위 4개 행을 선택한다",
+      "4번째 행마다 순번을 매긴다"
+    ],
+    "answer": 2,
+    "explanation": "NTILE(n)은 전체 행을 n개의 버킷(그룹)으로 균등하게 분류하고 각 행에 버킷 번호(1~n)를 부여한다. NTILE(4)는 전체 행을 4개의 그룹으로 나누어 각 행에 1~4의 번호를 부여한다. 100개 행이면 각 그룹에 25개씩 배정된다. 주로 사분위수 분석에 활용된다.",
+    "tags": ["윈도우함수", "NTILE"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c2_023",
+    "part": 2,
+    "chapter": "2",
+    "content": "MINUS(차집합) 연산자의 실행 결과로 올바른 것은?\n\n(집합A: 1,2,3,4 / 집합B: 3,4,5,6)",
+    "options": [
+      "A에 속하고 B에도 속하는 값: 3,4",
+      "B에 속하지만 A에 없는 값: 5,6",
+      "A에 속하지만 B에 없는 값: 1,2",
+      "A와 B 모두에 없는 값"
+    ],
+    "answer": 3,
+    "explanation": "MINUS(Oracle)/EXCEPT(SQL Server)는 첫 번째 SELECT 결과에서 두 번째 SELECT 결과를 뺀 차집합을 반환한다. A MINUS B는 A에는 있지만 B에는 없는 값을 반환한다. 집합A(1,2,3,4)에서 집합B(3,4,5,6)를 빼면 1,2가 된다.",
+    "tags": ["집합연산자", "MINUS"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c2_024",
+    "part": 2,
+    "chapter": "2",
+    "content": "다음 윈도우 함수에서 ORDER BY 절의 역할로 올바른 것은?\n\n```sql\nSUM(급여) OVER (PARTITION BY 부서코드 ORDER BY 입사일자)\n```",
+    "options": [
+      "최종 결과를 입사일자 순으로 정렬한다",
+      "집계 함수 계산 시 행의 순서를 정의하여 누적 집계를 가능하게 한다",
+      "입사일자가 같은 행을 그룹화한다",
+      "입사일자를 기준으로 중복을 제거한다"
+    ],
+    "answer": 2,
+    "explanation": "윈도우 함수 내 ORDER BY는 집계 계산 시 행의 순서를 정의하여 누적 집계를 가능하게 한다. 이 예시에서는 부서별로 입사일자 순서에 따라 급여의 누적 합계를 계산한다. 최종 결과의 정렬과는 다르며, 최종 정렬은 쿼리 수준의 ORDER BY로 별도 지정해야 한다.",
+    "tags": ["윈도우함수", "ORDER BY"],
+    "difficulty": "상"
+  },
+  {
+    "id": "p2c2_025",
+    "part": 2,
+    "chapter": "2",
+    "content": "UNION과 UNION ALL 중 성능 측면에서 유리한 것과 그 이유는?",
+    "options": [
+      "UNION이 빠르다. 중복 제거 과정이 추가 최적화를 제공하기 때문이다",
+      "UNION ALL이 빠르다. 중복 제거 과정이 없어 정렬/비교 작업이 필요 없기 때문이다",
+      "두 연산자의 성능은 항상 동일하다",
+      "중복 데이터가 많을수록 UNION이 빠르다"
+    ],
+    "answer": 2,
+    "explanation": "UNION ALL이 UNION보다 성능이 빠르다. UNION은 중복 제거를 위해 내부적으로 정렬과 비교 작업이 추가로 수행되지만, UNION ALL은 두 결과를 단순히 합치기만 하므로 추가 작업이 없다. 따라서 중복이 없거나 중복을 허용해도 되는 경우에는 UNION ALL을 사용하는 것이 성능상 유리하다.",
+    "tags": ["집합연산자", "UNION ALL", "성능"],
+    "difficulty": "중"
+  }
+]

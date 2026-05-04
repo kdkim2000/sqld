@@ -86,7 +86,8 @@ docs/journal/    → 바이브 코딩 기록
 | 번호 | 이름 | 담당 영역 |
 |------|------|---------|
 | 1 | scaffold | 프로젝트 초기화 |
-| 2 | content-writer | `data/` (JSON·MD) |
+| **9** | **pdf-extractor** | **`data/` (PDF 원본 기반) — PDF 있을 때 Agent 2 대신 사용** |
+| 2 | content-writer | `data/` (JSON·MD, 수동/AI 생성) |
 | 3 | foundation-builder | `types/`, `lib/`, `context/` |
 | 4 | layout-builder | `components/layout/`, `_app.tsx` |
 | 5 | quiz-builder | `components/quiz/`, `pages/quiz/` |
