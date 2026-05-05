@@ -2,24 +2,28 @@ import type { ProgressStore, AnswerResult, ExamResult, Stats } from '@/types'
 import { getAllQuestions } from '@/lib/questions'
 
 const STORAGE_KEY = 'sqld_progress'
-
-const DEFAULT_PROGRESS: ProgressStore = {
-  answers: {},
-  bookmarks: [],
-  lastVisited: null,
-  examHistory: [],
-}
+const MAX_EXAM_HISTORY = 10
 
 const isBrowser = typeof window !== 'undefined'
 
+function defaultProgress(): ProgressStore {
+  return {
+    answers: {},
+    bookmarks: [],
+    lastVisited: null,
+    examHistory: [],
+  }
+}
+
 export function loadProgress(): ProgressStore {
-  if (!isBrowser) return { ...DEFAULT_PROGRESS }
+  if (!isBrowser) return defaultProgress()
   try {
     const raw = localStorage.getItem(STORAGE_KEY)
-    if (!raw) return { ...DEFAULT_PROGRESS }
+    if (!raw) return defaultProgress()
     return JSON.parse(raw) as ProgressStore
-  } catch {
-    return { ...DEFAULT_PROGRESS }
+  } catch (err) {
+    console.warn('[progress] failed to parse stored progress, resetting', err)
+    return defaultProgress()
   }
 }
 
@@ -47,7 +51,7 @@ export function toggleBookmark(id: string): void {
 
 export function saveExamResult(result: ExamResult): void {
   const store = loadProgress()
-  store.examHistory = [result, ...store.examHistory].slice(0, 10)
+  store.examHistory = [result, ...store.examHistory].slice(0, MAX_EXAM_HISTORY)
   saveProgress(store)
 }
 

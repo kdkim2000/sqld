@@ -2,29 +2,11 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 import { useProgress } from '@/context/ProgressContext'
-import type { ChapterMeta, Stats } from '@/types'
+import type { Stats } from '@/types'
+import { CHAPTERS, CHAPTER_ID_PREFIX } from '@/lib/chapters'
 import ProgressChart from '@/components/dashboard/ProgressChart'
 import ChapterProgress from '@/components/dashboard/ChapterProgress'
 import WeakChapters from '@/components/dashboard/WeakChapters'
-
-// 챕터 목록 — lib/theory.ts 의 CHAPTERS 상수와 동기화 유지
-// lib/theory.ts 가 Node.js fs 를 import 하므로 클라이언트에서 직접 import 불가
-const CHAPTERS: ChapterMeta[] = [
-  { id: 'part1_ch1', part: 1, chapter: 1, title: '데이터 모델링의 이해', questionCount: 0 },
-  { id: 'part1_ch2', part: 1, chapter: 2, title: '데이터 모델과 성능', questionCount: 0 },
-  { id: 'part2_ch1', part: 2, chapter: 1, title: 'SQL 기본', questionCount: 0 },
-  { id: 'part2_ch2', part: 2, chapter: 2, title: 'SQL 활용', questionCount: 0 },
-  { id: 'part2_ch3', part: 2, chapter: 3, title: 'SQL 최적화 기본 원리', questionCount: 0 },
-]
-
-// 챕터 ID -> 문제 ID 접두사 매핑 (문제 ID 형식: p{part}c{chapter}_{번호})
-const CHAPTER_ID_PREFIX: Record<string, string> = {
-  part1_ch1: 'p1c1_',
-  part1_ch2: 'p1c2_',
-  part2_ch1: 'p2c1_',
-  part2_ch2: 'p2c2_',
-  part2_ch3: 'p2c3_',
-}
 
 // 빠른 시작 버튼 목록
 const QUICK_LINKS = [

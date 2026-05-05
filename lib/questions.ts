@@ -1,17 +1,10 @@
 import type { Question } from '@/types'
+import { CHAPTER_IDS } from '@/lib/chapters'
 import part1ch1 from '@/data/questions/part1_ch1.json'
 import part1ch2 from '@/data/questions/part1_ch2.json'
 import part2ch1 from '@/data/questions/part2_ch1.json'
 import part2ch2 from '@/data/questions/part2_ch2.json'
 import part2ch3 from '@/data/questions/part2_ch3.json'
-
-const CHAPTER_IDS = [
-  'part1_ch1',
-  'part1_ch2',
-  'part2_ch1',
-  'part2_ch2',
-  'part2_ch3',
-]
 
 const CHAPTER_DATA: Record<string, Question[]> = {
   part1_ch1: part1ch1 as Question[],
@@ -49,3 +42,4 @@ export function sampleExamQuestions(): Question[] {
 }
 
 export { CHAPTER_IDS }
+

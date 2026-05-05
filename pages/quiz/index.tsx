@@ -1,15 +1,7 @@
 import Link from 'next/link'
 import Layout from '@/components/layout/Layout'
 import { useProgress } from '@/context/ProgressContext'
-import { CHAPTER_IDS } from '@/lib/questions'
-
-const CHAPTER_META: Record<string, { title: string; part: number }> = {
-  part1_ch1: { title: '1과목 1장 - 데이터 모델링의 이해', part: 1 },
-  part1_ch2: { title: '1과목 2장 - 데이터 모델과 SQL', part: 1 },
-  part2_ch1: { title: '2과목 1장 - SQL 기본', part: 2 },
-  part2_ch2: { title: '2과목 2장 - SQL 활용', part: 2 },
-  part2_ch3: { title: '2과목 3장 - 관리 구문', part: 2 },
-}
+import { CHAPTER_IDS, getChapterFullLabel } from '@/lib/chapters'
 
 export default function QuizIndex() {
   const { stats, progress } = useProgress()
@@ -33,8 +25,6 @@ export default function QuizIndex() {
             <h2 className="text-lg font-semibold text-gray-800 mb-4">챕터별 문제풀기</h2>
             <div className="space-y-2">
               {CHAPTER_IDS.map((id) => {
-                const meta = CHAPTER_META[id]
-
                 return (
                   <Link
                     key={id}
@@ -42,7 +32,7 @@ export default function QuizIndex() {
                     className="flex items-center justify-between px-4 py-3 rounded-lg border border-gray-200 hover:border-blue-400 hover:bg-blue-50 transition-colors group"
                   >
                     <span className="font-medium text-gray-800 group-hover:text-blue-700">
-                      {meta?.title ?? id}
+                      {getChapterFullLabel(id)}
                     </span>
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-gray-400 group-hover:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
@@ -103,8 +93,8 @@ export default function QuizIndex() {
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">최근 모의고사 기록</h2>
             <div className="space-y-2">
-              {progress.examHistory.slice(0, 5).map((exam, i) => (
-                <div key={i} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+              {progress.examHistory.slice(0, 5).map((exam) => (
+                <div key={exam.date} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
                   <span className="text-sm text-gray-600">{new Date(exam.date).toLocaleDateString('ko-KR')}</span>
                   <div className="flex items-center gap-4 text-sm">
                     <span className="text-gray-500">
