@@ -1002,3 +1002,308 @@
 
 ❯ /model                                                                                                                                                                                          
   ⎿  Set model to Haiku 4.5
+
+※ recap: SQLD 사이트 구조 개선 계획을 세워 Phase A·B·D를 완료했습니다(SSOT 통합, Vitest+CI, ErrorBoundary, progress.ts 얕은복사 버그 수정). 다음은 Phase C 의사결정으로, PRD 50문항 vs 실제       
+  100문항 중 어느 쪽으로 맞출지 확인이 필요합니다. (disable recaps in /config)
+                                                                                                                                                                                                  
+❯ 아래를 수정하라.                                                                                                                                                                                
+  C1. 문항 수 정책 확정 (사용자 입력 필요)                                                                                                                                                        
+   - 옵션 ③: PRD에 "모의고사 50, 학습 풀 100" 으로 분리 명시 ← 권장                                                                                                                               
+  ⎿  ⧉ Selected 1 lines from docs\journal\history2.md in Visual Studio Code
+
+● Phase C(문항 수 정책)를 진행하시려는 것으로 보입니다. 확인할 사항:
+
+  현재 상태:
+  - PRD: 50문항 (1과목 10 + 2과목 40)
+  - 실제 데이터: 100문항 (part1_ch1:20, part1_ch2:15, part2_ch1:30, part2_ch2:25, part2_ch3:10)
+
+  옵션 ③ 채택 시 — docs/PRD.md 수정 내용:
+  ## 문제 풀이 콘텐츠
+  - 모의고사: 50문항 (1과목 10 + 2과목 40)
+  - 학습 풀 (챕터별 연습): 100문항 총
+    - 1과목: 35문항 (1장 20 + 2장 15)
+    - 2과목: 65문항 (1장 30 + 2장 25 + 3장 10)
+
+  이렇게 진행할까요, 아니면 다른 옵션을 선택하시겠어요?
+
+✻ Baked for 8s
+
+❯ 진행하라.                                                                                                                                                                                       
+            
+  Read 1 file (ctrl+o to expand)                                                                                                                                                                  
+                                                                                                                                                                                                  
+● Update(docs\PRD.md)                                                                                                                                                                             
+  ⎿  Added 7 lines, removed 1 line                                                                                                                                                                
+      37  - SQL 예제 코드 하이라이팅                                                                                                                                                              
+      38                                                                                                                                                                                          
+      39  ### 2. 문제 풀이                                                                                                                                                                        
+      40 -- **단원별 풀이**: 특정 챕터 문제만 선택해서 풀기                                                                                                                                       
+      40 +                                                                                                                                                                                        
+      41 +**학습 풀 (100문항)**                                                                                                                                                                 
+      42 +- **단원별 풀이**: 특정 챕터 문제만 선택해서 풀기 (진도별 학습용)                                                                                                                       
+      43 +  - 1과목: 35문항 (1장 20 + 2장 15)                                                                                                                                                     
+      44 +  - 2과목: 65문항 (1장 30 + 2장 25 + 3장 10)                                                                                                                                            
+      45 +                                                                                                                                                                                        
+      46 +**평가 및 부가 기능**                                                                                                                                                                   
+      47  - **전체 모의고사**: 실제 시험과 동일한 50문항 구성 (1과목 10 + 2과목 40), 제한 시간 90분                                                                                               
+      48  - **오답 재풀이**: 틀린 문제만 모아서 재시도
+      49  - **북마크 풀이**: 북마크한 문제만 모아서 풀기
+
+● 이제 history.md의 Phase C를 완료 상태로 표시하겠습니다.         
+
+  Searching for 2 patterns, reading 2 files, listing 1 directory… (ctrl+o to expand)                                                                                                              
+  ⎿  docs\journal\history2.md                          
+                                                                                                                                                                                                  
+● Update(docs\journal\history2.md)                                                                                                                                                              
+  ⎿  Added 6 lines, removed 5 lines                                                                                                                                                               
+      115   검증: npm test 전부 green, GitHub Actions 첫 실행 성공                                                                                                                                
+      116                                                                                                                                                                                         
+      117   ---                                                                                                                                                                                   
+      118 - 🟡 Phase C — 데이터 정합 결정 (사용자 의사결정 필요)                                                                                                                                  
+      118 + ✅ Phase C — 데이터 정합 결정 완료                                                                                                                                                  
+      119                                                                                                                                                                                         
+      120 - C1. 문항 수 정책 확정 (사용자 입력 필요)                                                                                                                                            
+      121 - - 옵션 ①: PRD를 100문항으로 수정 (현재 데이터 유지, 학습 콘텐츠 풍부)                                                                                                          
+      122 - - 옵션 ②: 데이터를 50문항으로 축소 (PRD 준수, 핵심 위주)                                                                                                                       
+      123 - - 옵션 ③: PRD에 "모의고사 50, 학습 풀 100" 으로 분리 명시 ← 권장                                                                                                               
+      120 + C1. 문항 수 정책 확정 (옵션 ③ 채택)                                                                                                                                            
+      121 + - PRD에 "모의고사 50, 학습 풀 100"으로 분리 명시                                                                                                                               
+      122 +   - 학습 풀: 100문항 (챕터별 연습용, 1과목 35 + 2과목 65)                                                                                                                      
+      123 +   - 모의고사: 50문항 (실제 시험 형식, 1과목 10 + 2과목 40)                                                                                                                     
+      124 +   - `docs/PRD.md` 섹션 2.2 수정 완료                                                                                                                                           
+      125  
+      126   C2. 데이터 파일 명명 정합화 (선택)
+      127   - data/questions/part1_ch1.json ↔ ID p1c1_001 접두사 통일
+
+● Update(docs\journal\history2.md)                                
+  ⎿  Added 6 lines, removed 5 lines                                                       
+      315       검증: npm test 전부 green, GitHub Actions 첫 실행 성공
+      316                                                                                                                                                                                         
+      317       ---
+      318 -     🟡 Phase C — 데이터 정합 결정 (사용자 의사결정 필요)                                                                                                                              
+      318 +     ✅ Phase C — 데이터 정합 결정 완료                                                                                                                                              
+      319                                                                                                                                                                                         
+      320 -     C1. 문항 수 정책 확정 (사용자 입력 필요)                                                                                                                                        
+      321 -     - 옵션 ①: PRD를 100문항으로 수정 (현재 데이터 유지, 학습 콘텐츠 풍부)                                                                                                      
+      322 -     - 옵션 ②: 데이터를 50문항으로 축소 (PRD 준수, 핵심 위주)                                                                                                                   
+      323 -     - 옵션 ③: PRD에 "모의고사 50, 학습 풀 100" 으로 분리 명시 ← 권장                                                                                                           
+      320 +     C1. 문항 수 정책 확정 (옵션 ③ 채택)                                                                                                                                        
+      321 +     - PRD에 "모의고사 50, 학습 풀 100"으로 분리 명시                                                                                                                           
+      322 +       - 학습 풀: 100문항 (챕터별 연습용, 1과목 35 + 2과목 65)                                                                                                                  
+      323 +       - 모의고사: 50문항 (실제 시험 형식, 1과목 10 + 2과목 40)                                                                                                                 
+      324 +       - `docs/PRD.md` 섹션 2.2 수정 완료                                                                                                                                       
+      325  
+      326       C2. 데이터 파일 명명 정합화 (선택)
+      327       - data/questions/part1_ch1.json ↔ ID p1c1_001 접두사 통일
+
+● 최종 검증:                                                      
+                                                                                          
+● Bash(npm run lint && npm run type-check && npm test 2>&1 | tail -20)                                                                                                                            
+  ⎿  > sqld-study@0.1.0 lint                                                                                                                                                                      
+     > next lint                  
+     … +21 lines (ctrl+o to expand)                                                                                                                                                               
+  ⎿  (timeout 2m)                                                                                                                                                                               
+                                                                                                                                                                                                  
+● Phase C 완료                                                                                                                                                                                    
+                                                                                                                                                                                                  
+  PRD 정책 변경: 옵션 ③ 채택                                                                                                                                                                      
+                                                                                                                                                                                                  
+  ✅ docs/PRD.md 섹션 2.2 (문제 풀이) 수정                                                                                                                                                        
+  - 학습 풀 (100문항): 챕터별 연습용 — 1과목 35 + 2과목 65                                                                                                                                        
+  - 모의고사 (50문항): 실제 시험 형식 — 1과목 10 + 2과목 40                                                                                                                                       
+
+  ✅ docs/journal/history2.md 업데이트
+
+  ✅ 최종 검증
+  - lint ✅
+  - type-check ✅
+  - 19/19 tests ✅
+
+  A/B/C/D 모두 완료됨. 구조 개선과 안전망 도입이 완료되었습니다.
+
+✻ Worked for 1m 12s                                                                                           
+                                                                                          
+❯ 커밋 생성                                                                                                                                                                                       
+                                                                                                                                                                                                  
+● Bash(git status)                                                                                                                                                                                
+  ⎿  On branch 03_refactor                                                                                                                                                                        
+     Changes not staged for commit:                                                                                                                                                               
+       (use "git add <file>..." to update what will be committed)
+     … +25 lines (ctrl+o to expand)                                                                                                                                                               
+                                                                                                                                                                                                  
+● Bash(git add -A ':!docs/journal/.sessions' && git commit -m "$(cat <<'EOF'
+      refactor: 구조 개선 및 안전망 도입 (Phase A-D)…)                                                                                                                                            
+  ⎿  [03_refactor f41da2c] refactor: 구조 개선 및 안전망 도입 (Phase A-D)                                                                                                                         
+      18 files changed, 3709 insertions(+), 364 deletions(-)
+      create mode 100644 .github/workflows/ci.yml                                                                                                                                                 
+     … +7 lines (ctrl+o to expand)                          
+                                                                                                                                                                                                  
+● Bash(git log --oneline -5)       
+  ⎿  f41da2c refactor: 구조 개선 및 안전망 도입 (Phase A-D)                                                                                                                                       
+     a7f4aaa markdown 수정                                                                                                                                                                        
+     a749c61 docs: session 기록 업데이트                                                                                                                                                          
+     … +2 lines (ctrl+o to expand)                                                                                                                                                                
+                                                                                                                                                                                                  
+● ✅ 커밋 생성 완료                                                                                                                                                                               
+                                                                                                                                                                                                  
+  f41da2c refactor: 구조 개선 및 안전망 도입 (Phase A-D)                                                                                                                                          
+   
+  변경 요약                                                                                                                                                                                       
+  - 18개 파일 수정                                          
+  - 8개 신규 파일 추가
+    - lib/chapters.ts (SSOT)
+    - components/ErrorBoundary.tsx
+    - lib/*.test.ts × 3 (19개 테스트)
+    - .github/workflows/ci.yml (CI/CD)
+    - docs/journal/history2.md (기록)
+    - vitest.config.ts
+
+  핵심 개선
+  1. 챕터 메타데이터 3군데 중복 → 1곳으로 통합
+  2. DEFAULT_PROGRESS 오염 버그 수정 (실제 프로덕션 버그)
+  3. Vitest 19개 테스트 + GitHub Actions CI
+  4. 모의고사/학습 풀 명확 분리 (PRD 정책화)
+
+  모든 검증 통과 (lint/type-check/test/build) ✅
+
+✻ Cogitated for 29s                                                                   
+
+❯ push this to remote                                                                                                                                                                             
+                      
+● Bash(git push -u origin 03_refactor)                                                                                                                                                            
+  ⎿  remote:                                                
+     remote: Create a pull request for '03_refactor' on GitHub by visiting:                                                                                                                       
+     remote:      https://github.com/kdkim2000/sqld/pull/new/03_refactor        
+     … +4 lines (ctrl+o to expand)                                                                                                                                                                
+                                                                                                                                                                                                  
+● ✅ Push 완료                                                                                                                                                                                    
+                                                                                                                                                                                                  
+  * [new branch]      03_refactor -> 03_refactor                                                                                                                                                  
+                                                                                                                                                                                                  
+  GitHub PR 생성 링크:                                                                                                                                                                            
+  https://github.com/kdkim2000/sqld/pull/new/03_refactor                                                                                                                                          
+                                                                                                                                                                                                  
+  브랜치 03_refactor가 원격에 업로드되었습니다. 위 링크에서 main으로의 Pull Request를 생성할 수 있습니다.                                                                                         
+
+✻ Cogitated for 14s                                                                           
+
+❯ PR 을 발행할 때 내용을 markdown 으로 복사할 수 있도록 준비하라.                                                                                                                                 
+                                                                  
+● Bash(git diff main..03_refactor --stat)                                                                                                                                                         
+  ⎿   .claude/agents/pdf-extractor.md          |  121 +     
+      .eslintrc.json                           |    3 +                                                                                                                                           
+      .github/workflows/ci.yml                 |   32 +     
+     … +41 lines (ctrl+o to expand)                                                                                                                                                               
+                                                                                                                                                                                                  
+● PR용 markdown 본문을 작성하겠습니다.                      
+                                                                                                                                                                                                  
+● Write(PR_TEMPLATE.md)                                                                                                                                                                           
+  ⎿  Wrote 148 lines to PR_TEMPLATE.md
+       1 # 구조 개선 및 안전망 도입 (Phase A-D)                                                                                                                                                   
+       2                                                    
+       3 ## 📋 Summary                                                                                                                                                                            
+       4                                                           
+       5 SQLD 사이트의 구조적 부채 4건을 체계적으로 정리했습니다.                         
+       6                                                                                                                                                                                          
+       7 - **SSOT 위반** 1건 제거: 챕터 메타데이터 3군데 중복 → `lib/chapters.ts` 단일화                                                                                                          
+       8 - **실제 버그** 1건 수정: `loadProgress()` 얕은 복사로 인한 리셋 후 잔존 답안 문제                                                                                                       
+       9 - **안전망** 도입: Vitest 19개 테스트 + GitHub Actions CI/CD                                                                                                                             
+      10 - **데이터 정합** 명확화: 모의고사 50 + 학습 풀 100으로 분리
+     … +138 lines (ctrl+o to expand)
+
+  Read 1 file (ctrl+o to expand)    
+                   
+● ✅ PR markdown 준비 완료
+                                                                   
+  파일: PR_TEMPLATE.md (프로젝트 루트)                                                    
+
+  사용법:                                                                                                                                                                                         
+  1. GitHub PR 생성 페이지 열기: https://github.com/kdkim2000/sqld/pull/new/03_refactor
+  2. PR 본문에 아래 내용 복사 & 붙여넣기:                                                                                                                                                         
+                                                            
+  ---
+  📋 복사할 PR 본문 (markdown)
+
+  # 구조 개선 및 안전망 도입 (Phase A-D)
+
+  ## Summary
+
+  SQLD 사이트의 구조적 부채 4건을 체계적으로 정리했습니다.
+
+  - **SSOT 위반** 1건 제거: 챕터 메타데이터 3군데 중복 → `lib/chapters.ts` 단일화
+  - **실제 버그** 1건 수정: `loadProgress()` 얕은 복사로 인한 리셋 후 잔존 답안 문제
+  - **안전망** 도입: Vitest 19개 테스트 + GitHub Actions CI/CD
+  - **데이터 정합** 명확화: 모의고사 50 + 학습 풀 100으로 분리
+
+  모든 검증 통과 (lint/type-check/19 tests/SSG build)
+
+  ---
+
+  ## Phase A: 챕터 메타데이터 SSOT 통합
+
+  **문제:** 챕터 정의가 3곳에 중복 → 유지보수 어려움
+
+  **해결:**
+  - `lib/chapters.ts` 신설 (단일 정의 + 헬퍼)
+  - 3개 페이지 인라인 메타 제거
+  - 챕터 타이틀 통일 (이론 MD 기준)
+
+  ---
+
+  ## Phase B: 안전망 도입
+
+  **문제:** 테스트/CI 없음 → 회귀 검출 불가
+
+  **해결:**
+  - Vitest + jsdom 설정
+  - 19개 테스트 추가 (chapters, questions, progress)
+  - 🐞 실제 버그 수정: `loadProgress()` 얕은 복사
+  - GitHub Actions CI: lint → type-check → test → build
+
+  ---
+
+  ## Phase C: 데이터 정합 결정
+
+  **옵션 ③ 채택:**
+  - 모의고사: 50문항 (1과목 10 + 2과목 40)
+  - 학습 풀: 100문항 (1과목 35 + 2과목 65)
+  - `docs/PRD.md` 명확화
+
+  ---
+
+  ## Phase D: 코드 품질
+
+  - ErrorBoundary 추가 (마크다운 렌더 실패 대응)
+  - `key={i}` → `key={exam.date}` (인덱스 키 제거)
+  - localStorage 파싱 실패 로깅 추가
+
+  ---
+
+  ## 검증 결과
+
+  ✅ npm run lint
+  ✅ npm run type-check
+  ✅ npm test (19/19 passed)
+  ✅ npm run build (18 pages SSG)
+
+  ---
+
+  🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+  ---
+  파일 위치: E:\apps\sqld\PR_TEMPLATE.md
+  필요시 로컬에서도 열어서 복사할 수 있습니다.
+
+✻ Cogitated for 43s                                                                                  
+                                                                                          
+※ recap: Completed structural analysis and fixed 4 debts (SSOT consolidation, Vitest suite, loadProgress bug, data policy) across Phases A-D; all changes committed and pushed to 03_refactor     
+  branch. Next: create PR to main. (disable recaps in /config)                                                                                                                                    
+                                                                                                                                                                                                  
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────── sqld-site-structure-refactor ──
+❯ quit                                                                                                                                                                                            
+──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ⏵⏵ accept edits on (shift+tab to cycle)                                                                                                                                       ⧉ In history2.md
+                                                                                                                                          control this session from your phone · /remote-control
+
+Resume this session with:
+claude --resume 743ef41e-9a1f-40ba-b1fa-4eb4a9428a73
