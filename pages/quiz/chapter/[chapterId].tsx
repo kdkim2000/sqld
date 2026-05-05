@@ -5,21 +5,14 @@ import Layout from '@/components/layout/Layout'
 import QuestionCard from '@/components/quiz/QuestionCard'
 import AnswerFeedback from '@/components/quiz/AnswerFeedback'
 import QuizNavigator from '@/components/quiz/QuizNavigator'
-import { getQuestionsByChapter, CHAPTER_IDS } from '@/lib/questions'
+import { getQuestionsByChapter } from '@/lib/questions'
+import { CHAPTER_IDS, getChapterFullLabel } from '@/lib/chapters'
 import { useProgress } from '@/context/ProgressContext'
 import type { Question, AnswerResult } from '@/types'
 
 interface Props {
   chapterId: string
   questions: Question[]
-}
-
-const CHAPTER_TITLE: Record<string, string> = {
-  part1_ch1: '1과목 1장 - 데이터 모델링의 이해',
-  part1_ch2: '1과목 2장 - 데이터 모델과 SQL',
-  part2_ch1: '2과목 1장 - SQL 기본',
-  part2_ch2: '2과목 2장 - SQL 활용',
-  part2_ch3: '2과목 3장 - 관리 구문',
 }
 
 export default function ChapterQuiz({ chapterId, questions }: Props) {
@@ -98,7 +91,7 @@ export default function ChapterQuiz({ chapterId, questions }: Props) {
               {total}문제 중 <span className="font-bold text-green-600">{correctCount}문제</span> 정답 /{' '}
               <span className="font-bold text-red-600">{wrongCount}문제</span> 오답
             </p>
-            <p className="text-sm text-gray-500">{CHAPTER_TITLE[chapterId] ?? chapterId}</p>
+            <p className="text-sm text-gray-500">{getChapterFullLabel(chapterId)}</p>
           </div>
 
           {/* 오답 목록 */}
@@ -164,7 +157,7 @@ export default function ChapterQuiz({ chapterId, questions }: Props) {
               &larr; 문제 목록
             </Link>
             <h1 className="text-xl font-bold text-gray-900 mt-1">
-              {CHAPTER_TITLE[chapterId] ?? chapterId}
+              {getChapterFullLabel(chapterId)}
             </h1>
           </div>
         </div>
