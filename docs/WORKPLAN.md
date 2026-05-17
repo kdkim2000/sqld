@@ -48,7 +48,7 @@ git --version
 **목표**: 데이터(JSON·MD) + 공유 레이어(types·lib·context) 완성  
 **예상 소요**: 30~60분
 
-### ⚠️ 권장 순서
+### 권장 순서
 1. **먼저** `/run-agent 3` (Foundation Builder)로 `types/index.ts` 5분 내 작성 → 타입 계약 확정
 2. **그 다음** 콘텐츠 에이전트 실행 (Foundation 작업과 병렬 가능)
 
@@ -56,7 +56,7 @@ git --version
 
 | 상황 | 실행 명령 | 비고 |
 |------|---------|------|
-| `docs/contents/` 에 PDF 파일 있음 ✅ | `/run-agent 9` | PDF 원본 기반 자동 생성 — **권장** |
+| `docs/contents/` 에 PDF 파일 있음 | `/run-agent 9` | PDF 원본 기반 자동 생성 — **권장** |
 | PDF 없거나 보완 필요 | `/run-agent 2` | 수동/AI 생성 |
 
 > PDF Extractor(Agent 9)가 우선입니다. PDF를 읽어 이론 마크다운과 문제 JSON을 직접 추출하므로 정확도가 높습니다.  
@@ -101,9 +101,9 @@ git --version
 ### 검증 게이트
 | 항목 | 명령 / 확인 |
 |------|-----------|
-| 레이아웃 파일 4개 | `components/layout/{Layout,Sidebar,Header}.tsx`, `pages/_app.tsx` |
+| 레이아웃 파일 | `components/layout/{Layout,TopBar}.tsx`, `pages/_app.tsx` |
 | Provider 연결 | `pages/_app.tsx`에 `<ProgressProvider><Layout>` 구조 |
-| 모바일 햄버거 | 375px 뷰포트에서 사이드바 토글 동작 |
+| TopBar 표시 | 브랜드 로고, 네비 링크, 게이미피케이션 배지 TopBar에 표시 |
 | 자동 저널 항목 | `[Phase 2] [layout-builder] — 공통 레이아웃` 기록 확인 |
 
 ### 통과 시 → Phase 3로 진행
@@ -125,10 +125,11 @@ git --version
 | 항목 | 명령 / 확인 |
 |------|-----------|
 | Quiz 컴포넌트 4개 | `components/quiz/{QuestionCard,AnswerFeedback,QuizNavigator,ExamTimer}.tsx` |
-| Quiz 페이지 5개 | `pages/quiz/{index,exam,wrong,bookmarks}.tsx`, `pages/quiz/chapter/[chapterId].tsx` |
-| Theory 컴포넌트 2개 | `components/theory/{TheoryContent,ChapterCard}.tsx` |
+| Quiz 페이지 6개 | `pages/quiz/{index,exam,result,wrong,bookmarks}.tsx`, `pages/quiz/chapter/[chapterId].tsx` |
+| Theory 컴포넌트 3개 | `components/theory/{TheoryContent,TheoryTOC,RelatedQuestions}.tsx` |
 | Theory 페이지 2개 | `pages/theory/index.tsx`, `pages/theory/[chapterId].tsx` |
 | 흐름 동작 | `/quiz/chapter/part2_ch1` → 보기 선택 → 정답 피드백 → localStorage 반영 |
+| 이론 3열 레이아웃 | `/theory/[id]` → TOC + 본문 + 관련문제 3열 표시 |
 | SSG 빌드 | `npm run build` → 5+5 챕터 경로 사전 생성 |
 | 자동 저널 항목 | `[Phase 3] [quiz-builder]`, `[Phase 3] [theory-builder]` 기록 확인 |
 
@@ -138,7 +139,7 @@ git --version
 
 ## Phase 4 — Dashboard (단독, Phase 3 완료 필수)
 
-**목표**: 학습 현황 메인 페이지  
+**목표**: Quest Mode 대시보드 메인 페이지  
 **예상 소요**: 20~30분
 
 ### 실행
@@ -149,8 +150,11 @@ git --version
 ### 검증 게이트
 | 항목 | 명령 / 확인 |
 |------|-----------|
-| 대시보드 컴포넌트 4개 | `components/dashboard/{ProgressChart,WeakChapterList,RecentWrongList,ExamHistoryCard}.tsx` |
-| 메인 페이지 | `pages/index.tsx` |
+| UI 컴포넌트 2개 | `components/ui/{Mascot,Badge}.tsx` |
+| 대시보드 컴포넌트 4개 | `components/dashboard/{HeroBanner,LearningPath,MascotCard,WeeklyXP}.tsx` |
+| 메인 페이지 | `pages/index.tsx` Quest Mode 대시보드 |
+| 히어로 배너 | 퍼플 그래디언트 배너 + 마스코트 표시 |
+| 학습 경로 버블 | 챕터 완료 상태 버블로 시각화 |
 | 빈 상태 표시 | localStorage 비어있을 때 적절한 안내 메시지 |
 | 자동 저널 항목 | `[Phase 4] [dashboard-builder] — 대시보드` 기록 확인 |
 
@@ -182,6 +186,35 @@ git --version
 | 회고 생성 | `docs/journal/LESSONS.md` 업데이트됨 |
 
 ### 통과 시 → 배포로 진행
+
+---
+
+## Phase 6 — Quest Mode 디자인 개편 (디자인 리모델링 시 실행)
+
+**목표**: OPUS-X 기반 퍼플 팔레트 + Quest Mode 게이미피케이션 UI 적용  
+**트리거**: `docs/sqld.zip` (design_handoff_sqld_quest) 디자인 핸드오프 수령 시  
+**예상 소요**: 2~3시간
+
+### 실행 순서 (의존성 기반)
+```
+1. 디자인 시스템 기반 (tailwind.config.js + globals.css + _document.tsx)
+2. ProgressContext 확장 (getStreak/getXP/getGems/getHearts)
+3. 레이아웃 교체 (TopBar + Layout.tsx)
+4. 대시보드 재설계 (/run-agent 7)
+5. 이론/퀴즈 페이지 업데이트 (/run-agent 6, /run-agent 5)
+6. 통합 QA (/run-agent 8)
+```
+
+### 검증 게이트
+| 항목 | 확인 |
+|------|------|
+| 퍼플 히어로 배너 표시 | 대시보드 접속 → 그래디언트 배너 표시 |
+| TopBar 배지 표시 | 스트릭/보석/하트 배지 TopBar에 표시 |
+| 학습 경로 버블 | 챕터 완료 상태 버블로 시각화 |
+| 이론 3열 레이아웃 | `/theory/[id]` → TOC + 본문 + 관련문제 |
+| 다크모드 토글 | TopBar 달 아이콘 클릭 → 테마 전환 |
+| TypeScript | `npx tsc --noEmit` → 0 errors |
+| 빌드 | `npm run build` → 성공 |
 
 ---
 

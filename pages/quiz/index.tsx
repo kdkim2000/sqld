@@ -1,5 +1,4 @@
 import Link from 'next/link'
-import Layout from '@/components/layout/Layout'
 import { useProgress } from '@/context/ProgressContext'
 import { CHAPTER_IDS, getChapterFullLabel } from '@/lib/chapters'
 
@@ -10,8 +9,8 @@ export default function QuizIndex() {
   const bookmarkCount = progress.bookmarks.length
 
   return (
-    <Layout>
-      <div className="max-w-3xl mx-auto">
+    <>
+      <div className="max-w-3xl mx-auto p-4 md:p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-2">문제 풀기</h1>
         <p className="text-gray-500 mb-8 text-sm">
           전체 {stats.total}문제 중 {stats.attempted}문제 풀이 완료 (정답률{' '}
@@ -119,6 +118,6 @@ export default function QuizIndex() {
           </div>
         )}
       </div>
-    </Layout>
+    </>
   )
 }

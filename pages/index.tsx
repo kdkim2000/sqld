@@ -4,36 +4,17 @@ import { useEffect, useMemo, useState } from 'react'
 import { useProgress } from '@/context/ProgressContext'
 import type { Stats } from '@/types'
 import { CHAPTERS, CHAPTER_ID_PREFIX } from '@/lib/chapters'
-import ProgressChart from '@/components/dashboard/ProgressChart'
+
+// Dashboard components
+import HeroBanner from '@/components/dashboard/HeroBanner'
+import LearningPath from '@/components/dashboard/LearningPath'
+import MascotCard from '@/components/dashboard/MascotCard'
+import WeeklyXP from '@/components/dashboard/WeeklyXP'
 import ChapterProgress from '@/components/dashboard/ChapterProgress'
 import WeakChapters from '@/components/dashboard/WeakChapters'
+import Badge from '@/components/ui/Badge'
 
-// 빠른 시작 버튼 목록
-const QUICK_LINKS = [
-  {
-    href: '/theory/part1_ch1',
-    label: '이론 학습 시작',
-    desc: '개념부터 차근차근',
-    icon: '📖',
-    color: 'bg-blue-50 border-blue-200 hover:bg-blue-100 text-blue-700',
-  },
-  {
-    href: '/quiz/part1_ch1',
-    label: '문제 풀기 시작',
-    desc: '챕터별 연습 문제',
-    icon: '✏️',
-    color: 'bg-green-50 border-green-200 hover:bg-green-100 text-green-700',
-  },
-  {
-    href: '/quiz/exam',
-    label: '모의고사 시작',
-    desc: '실전 시험 대비',
-    icon: '🎯',
-    color: 'bg-purple-50 border-purple-200 hover:bg-purple-100 text-purple-700',
-  },
-]
-
-// 서버 사이드(SSR) 에서 localStorage 접근 방지용 초기 Stats
+// SSR-safe initial stats
 const INITIAL_STATS: Stats = {
   total: 0,
   attempted: 0,
@@ -42,7 +23,7 @@ const INITIAL_STATS: Stats = {
   byPart: { 1: { total: 0, correct: 0, attempted: 0 }, 2: { total: 0, correct: 0, attempted: 0 } },
 }
 
-/** 문제 ID 접두사로 챕터별 통계를 정확하게 집계 */
+/** Compute per-chapter stats from raw answers using ID prefixes */
 function computeChapterStats(
   answers: Record<string, string>
 ): Record<string, { attempted: number; correct: number }> {
@@ -63,151 +44,140 @@ function computeChapterStats(
   return result
 }
 
+/** Find the first chapter that has not been fully completed */
+function findCurrentChapterId(
+  chapterStats: Record<string, { attempted: number; correct: number }>
+): string {
+  for (const ch of CHAPTERS) {
+    const s = chapterStats[ch.id] ?? { attempted: 0, correct: 0 }
+    const pct = s.attempted > 0 ? (s.correct / s.attempted) * 100 : 0
+    if (s.attempted < 5 || pct < 60) return ch.id
+  }
+  return CHAPTERS[CHAPTERS.length - 1].id
+}
+
 export default function Home() {
-  const { stats, progress } = useProgress()
+  const { stats, progress, getXP, getStreak, getGems, getHearts } = useProgress()
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  // 하이드레이션 전에는 초기 stats 사용
+  // Hydration guard — use empty stats until client-side
   const displayStats: Stats = mounted ? stats : INITIAL_STATS
-  const isFirstVisit = mounted && displayStats.attempted === 0
 
-  // 문제 ID 접두사 기반으로 챕터별 통계 계산 (과목 혼합 방지)
+  // Chapter stats keyed by chapter ID
   const chapterStats = useMemo(
     () => (mounted ? computeChapterStats(progress.answers) : {}),
     [mounted, progress.answers]
   )
 
-  const totalPct =
-    displayStats.total > 0
-      ? Math.round((displayStats.attempted / displayStats.total) * 100)
-      : 0
+  // Derived values
   const correctPct =
     displayStats.attempted > 0
       ? Math.round((displayStats.correct / displayStats.attempted) * 100)
       : 0
 
-  const part1 = displayStats.byPart[1]
-  const part2 = displayStats.byPart[2]
-  const part1Pct = part1?.total > 0 ? Math.round((part1.attempted / part1.total) * 100) : 0
-  const part2Pct = part2?.total > 0 ? Math.round((part2.attempted / part2.total) * 100) : 0
+  const xp = mounted ? getXP() : 0
+  const streak = mounted ? getStreak() : 0
+  const gems = mounted ? getGems() : 0
+  const hearts = mounted ? getHearts() : 3
+
+  const currentChapterId = mounted ? findCurrentChapterId(chapterStats) : CHAPTERS[0].id
+  const currentChapterHref = `/quiz/chapter/${currentChapterId}`
+  const theoryHref = `/theory/${currentChapterId}`
 
   return (
     <>
       <Head>
-        <title>SQLD 시험 준비 — 대시보드</title>
-        <meta name="description" content="SQLD 자격증 시험 이론 학습 및 예상문제 풀이 사이트" />
+        <title>SQLD Quest — 대시보드</title>
+        <meta name="description" content="SQLD 자격증 시험 이론 학습 및 예상문제 풀이" />
       </Head>
 
-      <div className="max-w-5xl mx-auto space-y-6">
-        {/* 1. 상단 진도 요약 카드 */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-xl font-bold text-gray-900">
-                {isFirstVisit ? 'SQLD 합격을 응원합니다!' : '학습 현황'}
-              </h1>
-              {isFirstVisit ? (
-                <p className="text-sm text-gray-500 mt-1">
-                  아래 버튼으로 이론 학습 또는 문제 풀기를 시작해보세요.
-                </p>
-              ) : (
-                <p className="text-sm text-gray-500 mt-1">
-                  전체{' '}
-                  <span className="font-semibold text-gray-700">{displayStats.total}</span>
-                  문항 중{' '}
-                  <span className="font-semibold text-primary-600">{displayStats.attempted}</span>
-                  문항 풀이 완료
-                </p>
-              )}
-            </div>
-
-            {!isFirstVisit && (
-              <div className="flex gap-6 flex-wrap">
-                <Stat label="풀이율" value={`${totalPct}%`} color="text-primary-600" />
-                <Stat label="정답률" value={`${correctPct}%`} color="text-green-600" />
-                <Stat label="정답 수" value={`${displayStats.correct}문항`} color="text-purple-600" />
-              </div>
-            )}
+      <div className="p-4 md:p-6 max-w-7xl mx-auto space-y-6">
+        {/* Gamification badges row */}
+        {mounted && (
+          <div className="flex flex-wrap gap-2 justify-end">
+            <Badge type="streak" value={streak} size="sm" />
+            <Badge type="gem" value={gems} size="sm" />
+            <Badge type="heart" value={hearts} size="sm" />
+            <Badge type="xp" value={xp} size="sm" />
           </div>
-        </div>
+        )}
 
-        {/* 2. 원형 차트 + 과목별 진도 + 빠른 시작 */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* 원형 차트 + 과목별 바 */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 flex flex-col items-center">
-            <h2 className="text-sm font-semibold text-gray-500 mb-4 self-start">전체 정답률</h2>
+        {/* Hero Banner */}
+        <HeroBanner
+          correctPct={correctPct}
+          currentChapterHref={currentChapterHref}
+          theoryHref={theoryHref}
+        />
+
+        {/* 2-column grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6">
+          {/* Left column */}
+          <div className="space-y-6">
+            {/* Learning Path */}
             {mounted ? (
-              <ProgressChart
-                correct={displayStats.correct}
-                total={displayStats.attempted}
-                size={130}
-              />
+              <LearningPath chapterStats={chapterStats} />
             ) : (
-              <div className="w-[130px] h-[130px] rounded-full bg-gray-100 animate-pulse" />
+              <div className="q-card h-36 animate-pulse" style={{ background: 'var(--q-surface-soft)' }} />
             )}
-            <div className="w-full mt-6 space-y-3">
-              <PartBar label="1과목 데이터 모델링" pct={part1Pct} color="bg-blue-500" />
-              <PartBar label="2과목 SQL" pct={part2Pct} color="bg-green-500" />
-            </div>
+
+            {/* Chapter Progress */}
+            <section className="q-card">
+              <h2
+                className="text-sm font-bold mb-4"
+                style={{ color: 'var(--q-ink-2)' }}
+              >
+                챕터별 진도
+              </h2>
+              <ChapterProgress chapters={CHAPTERS} chapterStats={chapterStats} />
+            </section>
           </div>
 
-          {/* 빠른 시작 */}
-          <div className="md:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <h2 className="text-sm font-semibold text-gray-500 mb-4">빠른 시작</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              {QUICK_LINKS.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`flex flex-col items-center justify-center text-center gap-2 border rounded-xl p-5 transition-colors ${link.color}`}
-                >
-                  <span className="text-3xl">{link.icon}</span>
-                  <span className="font-semibold text-sm">{link.label}</span>
-                  <span className="text-xs opacity-70">{link.desc}</span>
-                </Link>
-              ))}
-            </div>
-
-            {!isFirstVisit && (
-              <div className="mt-4 flex flex-wrap gap-3">
-                <Link
-                  href="/quiz/wrong"
-                  className="inline-flex items-center gap-1.5 text-sm text-red-600 hover:text-red-800 font-medium bg-red-50 border border-red-200 rounded-lg px-4 py-2 transition-colors hover:bg-red-100"
-                >
-                  오답 다시 풀기
-                </Link>
-                <Link
-                  href="/quiz/bookmarks"
-                  className="inline-flex items-center gap-1.5 text-sm text-yellow-700 hover:text-yellow-900 font-medium bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-2 transition-colors hover:bg-yellow-100"
-                >
-                  북마크 문제
-                </Link>
-              </div>
+          {/* Right sidebar */}
+          <div className="space-y-4">
+            {/* Mascot / XP card */}
+            {mounted ? (
+              <MascotCard xp={xp} />
+            ) : (
+              <div className="q-card h-36 animate-pulse" style={{ background: 'var(--q-surface-soft)' }} />
             )}
+
+            {/* Weekly XP chart */}
+            {mounted ? (
+              <WeeklyXP totalXP={xp} />
+            ) : (
+              <div className="q-card h-40 animate-pulse" style={{ background: 'var(--q-surface-soft)' }} />
+            )}
+
+            {/* Weak chapters */}
+            <section className="q-card">
+              <h2
+                className="text-sm font-bold mb-4"
+                style={{ color: 'var(--q-ink-2)' }}
+              >
+                취약 챕터 TOP 3
+              </h2>
+              <WeakChapters chapters={CHAPTERS} chapterStats={chapterStats} />
+            </section>
           </div>
         </div>
 
-        {/* 3. 취약 챕터 TOP 3 */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-sm font-semibold text-gray-500 mb-4">취약 챕터 TOP 3</h2>
-          <WeakChapters chapters={CHAPTERS} chapterStats={chapterStats} />
-        </div>
-
-        {/* 4. 챕터별 상세 진도 */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <h2 className="text-sm font-semibold text-gray-500 mb-4">챕터별 진도</h2>
-          <ChapterProgress chapters={CHAPTERS} chapterStats={chapterStats} />
-        </div>
-
-        {/* 처음 방문 가이드 */}
-        {isFirstVisit && (
-          <div className="bg-primary-50 border border-primary-200 rounded-xl p-6">
-            <h2 className="text-base font-bold text-primary-800 mb-3">학습 가이드</h2>
-            <ol className="space-y-2 text-sm text-primary-700">
+        {/* First-visit guide */}
+        {mounted && displayStats.attempted === 0 && (
+          <div
+            className="rounded-3xl p-6"
+            style={{
+              background: 'linear-gradient(135deg, #F4F3FF, #EDE9FE)',
+              border: '1px solid #DDD6FE',
+            }}
+          >
+            <h2 className="text-base font-bold mb-3" style={{ color: '#53389E' }}>
+              학습 가이드
+            </h2>
+            <ol className="space-y-2 text-sm" style={{ color: '#6941C6' }}>
               <li className="flex items-start gap-2">
                 <span className="font-bold shrink-0">1.</span>
                 <span>
@@ -220,7 +190,7 @@ export default function Home() {
               <li className="flex items-start gap-2">
                 <span className="font-bold shrink-0">2.</span>
                 <span>
-                  <Link href="/quiz/part1_ch1" className="underline underline-offset-2 font-semibold">
+                  <Link href="/quiz/chapter/part1_ch1" className="underline underline-offset-2 font-semibold">
                     챕터 문제 풀기
                   </Link>
                   로 이해도를 점검하세요.
@@ -240,7 +210,8 @@ export default function Home() {
             <div className="mt-4">
               <Link
                 href="/theory/part1_ch1"
-                className="inline-block bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-6 py-2.5 rounded-lg transition-colors"
+                className="inline-block text-sm font-bold px-6 py-2.5 rounded-2xl text-white transition-colors"
+                style={{ background: '#7F56D9' }}
               >
                 지금 시작하기
               </Link>
@@ -249,45 +220,5 @@ export default function Home() {
         )}
       </div>
     </>
-  )
-}
-
-// 내부 헬퍼 컴포넌트
-
-interface StatProps {
-  label: string
-  value: string
-  color: string
-}
-
-function Stat({ label, value, color }: StatProps) {
-  return (
-    <div className="text-center">
-      <p className={`text-xl font-bold ${color}`}>{value}</p>
-      <p className="text-xs text-gray-400 mt-0.5">{label}</p>
-    </div>
-  )
-}
-
-interface PartBarProps {
-  label: string
-  pct: number
-  color: string
-}
-
-function PartBar({ label, pct, color }: PartBarProps) {
-  return (
-    <div>
-      <div className="flex justify-between text-xs text-gray-500 mb-1">
-        <span>{label}</span>
-        <span className="font-medium">{pct}%</span>
-      </div>
-      <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
-        <div
-          className={`h-full rounded-full transition-all duration-500 ${color}`}
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-    </div>
   )
 }
