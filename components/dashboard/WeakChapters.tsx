@@ -82,7 +82,7 @@ export default function WeakChapters({ chapters, chapterStats }: WeakChaptersPro
                 {pct}%
               </span>
               <Link
-                href={`/quiz/${ch.id}`}
+                href={`/quiz/chapter/${ch.id}`}
                 className="text-xs text-primary-600 hover:text-primary-800 font-semibold"
               >
                 풀기 →

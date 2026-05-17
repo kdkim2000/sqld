@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect } from 'react'
 import Link from 'next/link'
-import Layout from '@/components/layout/Layout'
 import QuestionCard from '@/components/quiz/QuestionCard'
 import AnswerFeedback from '@/components/quiz/AnswerFeedback'
 import QuizNavigator from '@/components/quiz/QuizNavigator'
@@ -65,18 +64,18 @@ export default function WrongPage() {
   // 로딩 중
   if (!loaded) {
     return (
-      <Layout>
+      <>
         <div className="flex items-center justify-center h-64">
           <p className="text-gray-400">불러오는 중...</p>
         </div>
-      </Layout>
+      </>
     )
   }
 
   // 오답 없음
   if (questions.length === 0) {
     return (
-      <Layout>
+      <>
         <div className="max-w-lg mx-auto text-center py-20">
           <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -94,7 +93,7 @@ export default function WrongPage() {
             문제 목록으로
           </Link>
         </div>
-      </Layout>
+      </>
     )
   }
 
@@ -105,7 +104,7 @@ export default function WrongPage() {
     const percentage = Math.round((correctCount / total) * 100)
 
     return (
-      <Layout>
+      <>
         <div className="max-w-2xl mx-auto text-center py-12">
           <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 mb-6">
             <h1 className="text-xl font-bold text-gray-800 mb-4">오답 노트 완료</h1>
@@ -137,7 +136,7 @@ export default function WrongPage() {
             </Link>
           </div>
         </div>
-      </Layout>
+      </>
     )
   }
 
@@ -146,7 +145,7 @@ export default function WrongPage() {
   const showResult = currentAnswer !== null
 
   return (
-    <Layout>
+    <>
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -199,6 +198,6 @@ export default function WrongPage() {
           </div>
         </div>
       </div>
-    </Layout>
+    </>
   )
 }

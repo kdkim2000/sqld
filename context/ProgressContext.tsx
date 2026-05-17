@@ -16,6 +16,10 @@ interface ProgressContextValue {
   toggleBookmark: (id: string) => void
   resetProgress: () => void
   isBookmarked: (id: string) => boolean
+  getStreak: () => number
+  getXP: () => number
+  getGems: () => number
+  getHearts: () => number
 }
 
 const ProgressContext = createContext<ProgressContextValue | null>(null)
@@ -66,8 +70,17 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     [progress.bookmarks]
   )
 
+  // UI-only 게이미피케이션 계산값
+  const getStreak = useCallback(
+    () => Math.max(progress.examHistory.length, stats.attempted > 0 ? 1 : 0),
+    [progress.examHistory.length, stats.attempted]
+  )
+  const getXP = useCallback(() => stats.correct * 10, [stats.correct])
+  const getGems = useCallback(() => progress.examHistory.length * 50, [progress.examHistory.length])
+  const getHearts = useCallback(() => 3, [])
+
   return (
-    <ProgressContext.Provider value={{ progress, stats, markAnswer, toggleBookmark, resetProgress, isBookmarked }}>
+    <ProgressContext.Provider value={{ progress, stats, markAnswer, toggleBookmark, resetProgress, isBookmarked, getStreak, getXP, getGems, getHearts }}>
       {children}
     </ProgressContext.Provider>
   )

@@ -65,7 +65,7 @@ export default function ChapterProgress({ chapters, chapterStats }: ChapterProgr
                 이론 보기
               </Link>
               <Link
-                href={`/quiz/${ch.id}`}
+                href={`/quiz/chapter/${ch.id}`}
                 className="text-xs text-primary-600 hover:text-primary-800 font-semibold underline underline-offset-2"
               >
                 문제 풀기

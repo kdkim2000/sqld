@@ -29,6 +29,8 @@ Phase 3   │                            │  (병렬)
 Phase 4 ─────────────────────────────────────────── [Dashboard]
                         │
 Phase 5 ─────────────────────────────────────────── [QA]
+                        │
+Phase 6 ─────────────────────────────────────────── [Quest Mode 디자인 개편] (선택)
 ```
 
 ---
@@ -183,7 +185,7 @@ data/questions/
 - `localStorage` 읽기/쓰기 유틸 (SSR 가드 포함)
 - 문제 데이터 로드·필터 함수
 - 이론 데이터 로드 함수
-- `ProgressContext` 전역 상태 구현
+- `ProgressContext` 전역 상태 구현 (게이미피케이션 메서드 포함)
 
 **소유 파일**
 ```
@@ -214,7 +216,11 @@ lib/progress.ts
 context/ProgressContext.tsx
   ├── ProgressProvider
   ├── useProgress() hook
-  └── 초기 로드: useEffect → localStorage
+  ├── 초기 로드: useEffect → localStorage
+  ├── getStreak() → number  (examHistory.length 기반, UI-only)
+  ├── getXP() → number      (correct * 10, UI-only)
+  ├── getGems() → number    (examHistory.length * 50, UI-only)
+  └── getHearts() → number  (고정값 3, UI-only)
 ```
 
 **선행 조건**: Agent 1 완료
@@ -230,32 +236,35 @@ npx tsc --noEmit   # 타입 오류 0개
 
 ### Agent 4 — Layout Builder (레이아웃)
 
-**한 줄 요약**: 모든 페이지에 공통 적용되는 헤더, 사이드바, 네비게이션을 구현한다.
+**한 줄 요약**: TopBar 기반 단일 네비게이션 레이아웃과 게이미피케이션 배지를 구현한다.
 
 **책임**
-- 반응형 레이아웃 쉘 (모바일: 햄버거 메뉴, PC: 사이드바 고정)
-- 사이드바 네비게이션: 대시보드 / 이론 학습 / 문제풀이 메뉴 트리
+- TopBar 구현: 브랜드 로고, 상단 네비게이션 링크, 게이미피케이션 배지 (스트릭/보석/하트), 다크모드 토글
+- `Layout.tsx`: TopBar + main 전체폭 구조 (사이드바 없음)
 - `_app.tsx`에 `ProgressProvider` + `Layout` 래핑 연결
-- Tailwind 공통 색상 팔레트 확정 (시험 컬러: 파란 계열)
+- OPUS-X 퍼플 팔레트 기반 Tailwind 공통 색상 확정
+- CSS 변수 기반 다크모드 지원 (`[data-theme="dark"]` 선택자)
 
 **소유 파일**
 ```
 components/layout/
-  Layout.tsx       ← 헤더 + 사이드바 + main 영역
-  Sidebar.tsx      ← 과목/챕터 트리 네비게이션
-  Header.tsx       ← 타이틀, 모바일 햄버거 버튼
+  Layout.tsx       ← TopBar + main 구조 (사이드바 제거)
+  TopBar.tsx       ← 브랜드 + 네비 + 게이미피케이션 배지 + 다크모드 토글
+  Sidebar.tsx      ← (레거시, 사용 안 함)
+  Header.tsx       ← (레거시, 사용 안 함)
+
 pages/_app.tsx     ← ProgressProvider + Layout 최종 연결
 ```
 
 **선행 조건**: Agent 3 완료 (`ProgressContext` import)
 
-**출력**: 어느 페이지든 `<Layout>`으로 감싸면 일관된 UI가 나오는 쉘
+**출력**: 어느 페이지든 `<Layout>`으로 감싸면 TopBar가 포함된 일관된 UI가 나오는 쉘
 
 ---
 
 ### Agent 5 — Quiz Feature Builder (문제풀이 기능)
 
-**한 줄 요약**: 4가지 풀이 모드(단원별/모의고사/오답/북마크)와 관련 컴포넌트를 모두 구현한다.
+**한 줄 요약**: 4가지 풀이 모드(단원별/모의고사/오답/북마크)와 퀴즈 결과 화면을 포함한 모든 컴포넌트를 구현한다.
 
 **책임**
 
@@ -268,6 +277,7 @@ pages/_app.tsx     ← ProgressProvider + Layout 최종 연결
 | `quiz/index` | 4가지 모드 선택 메뉴, 챕터별 진도율 미리보기 |
 | `quiz/chapter/[id]` | 단원별 순서 풀이, `getStaticPaths`로 SSG |
 | `quiz/exam` | 랜덤 50문항 모의고사, 결과 저장 |
+| `quiz/result` | 퀴즈 완료 결과 화면 (별/XP/보석 UI-only 표시) |
 | `quiz/wrong` | localStorage 오답 목록 로드 후 재풀이 |
 | `quiz/bookmarks` | localStorage 북마크 목록 로드 후 풀이 |
 
@@ -283,75 +293,91 @@ pages/quiz/
   index.tsx
   chapter/[chapterId].tsx
   exam.tsx
+  result.tsx              ← 퀴즈 완료 결과 화면 (별/XP/보석 UI-only)
   wrong.tsx
   bookmarks.tsx
 ```
 
 **선행 조건**: Agent 3 (타입·유틸), Agent 4 (레이아웃)
 
-**출력**: 5개 퀴즈 페이지가 모두 동작하는 문제풀이 기능
+**출력**: 6개 퀴즈 페이지가 모두 동작하는 문제풀이 기능
 
 **검증 기준**
 - 보기 선택 → 정답 여부 표시 → 해설 공개 흐름 동작
 - `ProgressContext.markAnswer` 호출 후 localStorage에 반영
-- 모의고사 타이머 종료 시 결과 저장
+- 모의고사 타이머 종료 시 결과 저장 후 `result.tsx`로 이동
 
 ---
 
 ### Agent 6 — Theory Feature Builder (이론 학습 기능)
 
-**한 줄 요약**: 챕터별 이론 본문 렌더링과 목차 페이지를 구현한다.
+**한 줄 요약**: 챕터별 이론 본문 렌더링, 자동 목차, 관련 문제 미리보기를 포함한 3열 레이아웃을 구현한다.
 
 **책임**
-- 마크다운 → HTML 렌더링 (SQL 코드 블록 신택스 하이라이팅 포함)
+- 마크다운 → HTML 렌더링 (SQL 코드 블록 신택스 하이라이팅, 보라색 코드 블록 스타일 포함)
 - 챕터 목차 페이지: 과목별 그룹핑, 진도율 배지 표시
+- `TheoryTOC`: 마크다운 헤딩 파싱 기반 자동 목차 + 스크롤 스파이
+- `RelatedQuestions`: 동일 챕터 관련 문제 미리보기 + Querymon 팁 표시
 - `getStaticPaths` / `getStaticProps`로 SSG 빌드
+- 챕터 페이지 3열 레이아웃: TOC(좌) + 본문(중) + 관련문제(우)
 
 **소유 파일**
 ```
 components/theory/
-  TheoryContent.tsx    ← react-markdown + rehype-highlight 렌더러
-  ChapterCard.tsx      ← 목차의 챕터 카드 (제목 + 완독률 배지)
+  TheoryContent.tsx      ← 헤딩 id 자동 부여, 보라색 코드 블록
+  TheoryTOC.tsx          ← 자동 목차 + 스크롤 스파이
+  RelatedQuestions.tsx   ← 관련 문제 미리보기 + Querymon 팁
 
 pages/theory/
-  index.tsx            ← 전체 목차 (과목 1 / 과목 2 섹션)
-  [chapterId].tsx      ← 챕터 본문 (SSG)
+  index.tsx              ← 전체 목차 (과목별 그룹핑)
+  [chapterId].tsx        ← 3열 레이아웃 (TOC + 본문 + 관련문제)
 ```
 
-**선행 조건**: Agent 3 (유틸), Agent 4 (레이아웃), Agent 2 (`.md` 파일)
+**선행 조건**: Agent 3 (유틸), Agent 4 (레이아웃), Agent 2 또는 9 (`.md` 파일)
 
 **출력**: `/theory` 및 `/theory/[id]` 경로가 완전히 동작하는 이론 기능
 
 **검증 기준**
 - `npm run build` 시 `[chapterId]` SSG 경로 5개 생성 확인
 - SQL 코드 블록에 신택스 하이라이팅 적용 확인
+- 챕터 페이지에서 TOC 스크롤 스파이 동작 확인
 
 ---
 
 ### Agent 7 — Dashboard Builder (대시보드)
 
-**한 줄 요약**: 메인 페이지에서 학습 현황을 한눈에 볼 수 있는 대시보드를 구현한다.
+**한 줄 요약**: Quest Mode 메인 대시보드 — 히어로 배너, 마스코트, 학습 경로 버블, 주간 XP 차트를 구현한다.
 
 **책임**
-- 전체 진도율 진행 바 (풀이 완료 / 전체)
-- 과목별 정답률 차트 (`ProgressChart`: SVG 또는 CSS 기반, 외부 차트 라이브러리 없이)
-- 취약 챕터 목록 (정답률 낮은 순 TOP 3)
-- 최근 오답 목록 (최근 5개)
-- 빠른 이동 버튼: "이어서 풀기", "오답 다시 풀기"
+- Querymon SVG 마스코트 컴포넌트 (레벨별 표정/색상)
+- 게이미피케이션 배지: 스트릭/보석/하트/XP (TopBar와 공유)
+- 퍼플 그래디언트 히어로 배너 (마스코트 + 오늘의 퀘스트 메시지)
+- 챕터 버블 경로 시각화 (완료/진행중/미시작 상태 색상 표시)
+- 마스코트 카드 (현재 레벨 + 학습 팁)
+- 주간 XP 막대 차트 (7일 기준)
+- 기존 ProgressChart, WeakChapters, ChapterProgress 컴포넌트 유지
 
 **소유 파일**
 ```
-components/dashboard/
-  ProgressChart.tsx      ← 과목별 정답률 시각화
-  WeakChapterList.tsx    ← 취약 챕터 카드
-  RecentWrongList.tsx    ← 최근 오답 목록
+components/ui/
+  Mascot.tsx             ← Querymon SVG 마스코트
+  Badge.tsx              ← 스트릭/보석/하트/XP 배지
 
-pages/index.tsx          ← 대시보드 메인
+components/dashboard/
+  HeroBanner.tsx         ← 퍼플 그래디언트 히어로 배너
+  LearningPath.tsx       ← 챕터 버블 경로 시각화
+  MascotCard.tsx         ← 마스코트 카드 (레벨 + 팁)
+  WeeklyXP.tsx           ← 주간 XP 막대 차트
+  ProgressChart.tsx      ← (기존 유지) 과목별 정답률 시각화
+  WeakChapters.tsx       ← (기존 유지) 취약 챕터 카드
+  ChapterProgress.tsx    ← (기존 유지) 챕터 진도율
+
+pages/index.tsx          ← Quest Mode 대시보드 메인
 ```
 
-**선행 조건**: Agent 3 (`getStats()`), Agent 4 (레이아웃), Agent 5, 6 (전체 데이터 구조 확정 후)
+**선행 조건**: Agent 3 (`getStats()`, `getStreak()`, `getXP()`, `getGems()`, `getHearts()`), Agent 4 (레이아웃), Agent 5, 6 (전체 데이터 구조 확정 후)
 
-**출력**: `/` 경로 대시보드 페이지 완성
+**출력**: `/` 경로 Quest Mode 대시보드 페이지 완성
 
 ---
 
@@ -366,6 +392,7 @@ pages/index.tsx          ← 대시보드 메인
 - `localStorage` SSR 가드 누락 점검
 - 문제 JSON 스키마 일관성 검증 스크립트 실행
 - `getStaticPaths`가 모든 챕터 경로를 올바르게 생성하는지 확인
+- Quest Mode UI 요소 (배지, 배너, 버블 등) 렌더링 오류 점검
 
 **소유 파일**
 ```
@@ -394,10 +421,11 @@ npm run build       # 성공 (exit 0)
 | Agent 1 (Scaffold) | 전체 | `npm run dev` 실행 가능한 프로젝트 골격 |
 | Agent 9 (PDF Extractor) | Agent 6 (Theory), Agent 5 (Quiz) | `data/` 파일 존재 + ID 규칙 준수 (PDF 기반) |
 | Agent 2 (Content) | Agent 6 (Theory), Agent 5 (Quiz) | `data/` 파일 존재 + ID 규칙 준수 (수동 생성, Agent 9 대체) |
-| Agent 3 (Foundation) | Agent 4, 5, 6, 7 | `types/index.ts` export 타입, `useProgress()` hook |
-| Agent 4 (Layout) | Agent 5, 6, 7 | `<Layout>` 컴포넌트, `_app.tsx` Provider 연결 완료 |
+| Agent 3 (Foundation) | Agent 4, 5, 6, 7 | `types/index.ts` export 타입, `useProgress()` hook, 게이미피케이션 메서드 |
+| Agent 4 (Layout) | Agent 5, 6, 7 | `<Layout>` 컴포넌트 (TopBar 포함), `_app.tsx` Provider 연결 완료 |
 | Agent 5 (Quiz) | Agent 7 (Dashboard) | `QuizMode` 타입, `ProgressContext` 상태 구조 확정 |
 | Agent 6 (Theory) | Agent 7 (Dashboard) | `ChapterMeta` 타입, 챕터 목록 확정 |
+| Agent 7 (Dashboard) | Agent 4 (Layout/TopBar) | `Badge.tsx`, `Mascot.tsx` 공유 컴포넌트 (`components/ui/`) |
 
 ---
 
