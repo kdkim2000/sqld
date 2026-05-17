@@ -32,3 +32,4 @@ Thumbs.db
 
 # 로컬 전용 Claude 설정
 .claude/settings.local.json
+docs/journal/history2.md

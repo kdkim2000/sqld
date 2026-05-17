@@ -1,0 +1,482 @@
+[
+  {
+    "id": "p2c1_001",
+    "part": 2,
+    "chapter": "1",
+    "content": "SQL 명령어 중 DDL(Data Definition Language)에 해당하지 않는 것은?",
+    "options": [
+      "CREATE",
+      "ALTER",
+      "GRANT",
+      "TRUNCATE"
+    ],
+    "answer": 3,
+    "explanation": "GRANT는 DCL(Data Control Language)에 해당한다. DDL에는 CREATE(생성), ALTER(변경), DROP(삭제), TRUNCATE(전체 삭제), RENAME(이름 변경) 등이 있다. DCL에는 GRANT(권한 부여)와 REVOKE(권한 회수)가 있다.",
+    "tags": ["DDL", "DCL", "SQL분류"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c1_002",
+    "part": 2,
+    "chapter": "1",
+    "content": "SELECT 문의 실행 순서로 올바른 것은?",
+    "options": [
+      "SELECT → FROM → WHERE → GROUP BY → HAVING → ORDER BY",
+      "FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY",
+      "FROM → SELECT → WHERE → GROUP BY → HAVING → ORDER BY",
+      "WHERE → FROM → GROUP BY → HAVING → SELECT → ORDER BY"
+    ],
+    "answer": 2,
+    "explanation": "SELECT 문의 실행 순서는 FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY이다. 작성 순서와 실행 순서가 다르다는 점이 중요하다. FROM 절에서 테이블을 읽고, WHERE로 행을 필터링하고, GROUP BY로 그룹화하고, HAVING으로 그룹 조건을 적용하고, SELECT로 컬럼을 선택하고, 마지막으로 ORDER BY로 정렬한다.",
+    "tags": ["SELECT", "실행순서"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c1_003",
+    "part": 2,
+    "chapter": "1",
+    "content": "NULL에 관한 설명으로 올바르지 않은 것은?",
+    "options": [
+      "NULL은 0이나 공백과 다른 값이다",
+      "NULL과의 연산 결과는 항상 NULL이다",
+      "NULL 비교 시 = NULL을 사용할 수 있다",
+      "NULL 조회 시 IS NULL을 사용해야 한다"
+    ],
+    "answer": 3,
+    "explanation": "NULL 비교 시 '= NULL'을 사용하면 항상 FALSE가 반환된다. NULL은 반드시 IS NULL 또는 IS NOT NULL을 사용하여 비교해야 한다. NULL은 미확인 값이나 해당 없음을 의미하며 0이나 공백과 다르고, NULL이 포함된 산술 연산의 결과는 항상 NULL이다.",
+    "tags": ["NULL", "NULL처리"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c1_004",
+    "part": 2,
+    "chapter": "1",
+    "content": "다음 SQL의 실행 결과에서 COUNT(*)와 COUNT(컬럼)의 차이를 올바르게 설명한 것은?\n\n```\n직원 테이블 (5행): 부서코드 = 'A', 'B', NULL, 'A', NULL\n```",
+    "options": [
+      "COUNT(*)와 COUNT(부서코드) 모두 5를 반환한다",
+      "COUNT(*)는 5, COUNT(부서코드)는 3을 반환한다",
+      "COUNT(*)는 3, COUNT(부서코드)는 5를 반환한다",
+      "COUNT(*)와 COUNT(부서코드) 모두 3을 반환한다"
+    ],
+    "answer": 2,
+    "explanation": "COUNT(*)는 NULL을 포함한 모든 행의 수를 반환하므로 5를 반환한다. COUNT(컬럼명)은 해당 컬럼이 NULL이 아닌 행의 수만 반환하므로 NULL 2개를 제외한 3을 반환한다. 이는 집계 함수에서 NULL 처리의 핵심적인 차이점이다.",
+    "tags": ["집계함수", "COUNT", "NULL"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_005",
+    "part": 2,
+    "chapter": "1",
+    "content": "WHERE 절과 HAVING 절의 차이에 대한 설명으로 올바른 것은?",
+    "options": [
+      "WHERE는 그룹에 대한 조건, HAVING은 행에 대한 조건을 적용한다",
+      "WHERE는 GROUP BY 이후에 실행되고, HAVING은 GROUP BY 이전에 실행된다",
+      "WHERE에서 집계 함수를 사용할 수 없고, HAVING에서는 집계 함수를 사용할 수 있다",
+      "HAVING은 WHERE의 기능을 모두 포함한다"
+    ],
+    "answer": 3,
+    "explanation": "WHERE는 GROUP BY 이전에 개별 행에 조건을 적용하며 집계 함수를 사용할 수 없다. HAVING은 GROUP BY 이후에 그룹에 대한 조건을 적용하며 집계 함수를 사용할 수 있다. 예를 들어 'HAVING COUNT(*) >= 3'은 그룹 내 행 수가 3 이상인 그룹만 조회한다.",
+    "tags": ["WHERE", "HAVING", "GROUP BY"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_006",
+    "part": 2,
+    "chapter": "1",
+    "content": "다음 SQL의 실행 결과는?\n\n```sql\nSELECT ROUND(123.456, 1) FROM DUAL;\n```",
+    "options": [
+      "123",
+      "123.4",
+      "123.5",
+      "124"
+    ],
+    "answer": 3,
+    "explanation": "ROUND(숫자, 자릿수) 함수는 지정한 자릿수까지 반올림한다. ROUND(123.456, 1)은 소수점 첫째 자리까지 표현하고 둘째 자리(5)를 반올림하므로 123.5를 반환한다. TRUNC(123.456, 1)은 버림하여 123.4를 반환한다.",
+    "tags": ["숫자함수", "ROUND"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c1_007",
+    "part": 2,
+    "chapter": "1",
+    "content": "LIKE 연산자에서 '_'(언더스코어)가 의미하는 것은?",
+    "options": [
+      "0개 이상의 임의 문자",
+      "정확히 1개의 임의 문자",
+      "공백 문자",
+      "특수 문자"
+    ],
+    "answer": 2,
+    "explanation": "LIKE 연산자에서 '_'(언더스코어)는 정확히 1개의 임의 문자를 의미한다. '%'는 0개 이상의 임의 문자를 의미한다. 예를 들어 LIKE '_철_'은 앞 1글자 + '철' + 뒤 1글자 패턴으로 '홍철수', '김철민' 등이 해당한다.",
+    "tags": ["LIKE", "와일드카드"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c1_008",
+    "part": 2,
+    "chapter": "1",
+    "content": "다음 SQL에서 NVL 함수의 실행 결과는?\n\n```sql\nSELECT NVL(NULL, '기본값') FROM DUAL;\n```",
+    "options": [
+      "NULL",
+      "기본값",
+      "오류 발생",
+      "빈 문자열"
+    ],
+    "answer": 2,
+    "explanation": "NVL(expr, value) 함수는 첫 번째 인수가 NULL이면 두 번째 인수(대체값)를 반환하고, NULL이 아니면 첫 번째 인수를 반환한다. 따라서 NVL(NULL, '기본값')은 NULL이므로 '기본값'을 반환한다.",
+    "tags": ["NULL함수", "NVL"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c1_009",
+    "part": 2,
+    "chapter": "1",
+    "content": "DROP TABLE과 TRUNCATE TABLE의 차이점으로 올바른 것은?",
+    "options": [
+      "DROP은 특정 행만 삭제할 수 있고, TRUNCATE는 전체를 삭제한다",
+      "DROP은 테이블 구조까지 삭제하고, TRUNCATE는 데이터만 삭제한다",
+      "DROP은 롤백이 가능하고, TRUNCATE는 롤백이 불가능하다",
+      "DROP은 DML이고, TRUNCATE는 DDL이다"
+    ],
+    "answer": 2,
+    "explanation": "DROP TABLE은 테이블의 데이터와 구조(스키마) 자체를 모두 삭제하고, TRUNCATE TABLE은 테이블 구조는 유지하면서 모든 데이터만 삭제한다. 두 명령 모두 DDL이므로 자동 커밋되어 롤백이 불가능하다. DELETE는 DML로 롤백이 가능하다.",
+    "tags": ["DDL", "DROP", "TRUNCATE"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_010",
+    "part": 2,
+    "chapter": "1",
+    "content": "LEFT OUTER JOIN에 대한 설명으로 올바른 것은?",
+    "options": [
+      "오른쪽 테이블의 모든 행이 결과에 포함된다",
+      "왼쪽 테이블의 모든 행이 결과에 포함되고, 오른쪽 테이블에 매칭 행이 없으면 NULL로 채워진다",
+      "두 테이블 모두 공통 행만 결과에 포함된다",
+      "양쪽 테이블의 모든 행이 결과에 포함된다"
+    ],
+    "answer": 2,
+    "explanation": "LEFT OUTER JOIN은 왼쪽(LEFT) 테이블의 모든 행을 결과에 포함하고, 오른쪽 테이블에 매칭되는 행이 없으면 NULL로 채워진다. 양쪽 공통 행만 포함하면 INNER JOIN, 오른쪽 모두는 RIGHT OUTER JOIN, 양쪽 모두는 FULL OUTER JOIN이다.",
+    "tags": ["JOIN", "LEFT OUTER JOIN"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c1_011",
+    "part": 2,
+    "chapter": "1",
+    "content": "Oracle에서 외부 조인을 나타내는 (+) 표기법으로 올바른 것은?\n\n```sql\n-- 직원 테이블의 모든 행을 조회 (매칭 부서가 없어도 포함)\nSELECT E.직원명, D.부서명\n  FROM 직원 E, 부서 D\n WHERE E.부서코드 = D.부서코드[?];\n```",
+    "options": [
+      "WHERE E.부서코드(+) = D.부서코드",
+      "WHERE E.부서코드 = D.부서코드(+)",
+      "WHERE E.부서코드(+) = D.부서코드(+)",
+      "WHERE E(+).부서코드 = D.부서코드"
+    ],
+    "answer": 2,
+    "explanation": "Oracle의 (+) 표기법에서 (+)는 데이터가 없을 수도 있는 쪽, 즉 NULL로 채워질 테이블 쪽에 붙인다. 직원의 모든 행을 보여주면서 부서 정보가 없을 때 NULL을 허용하므로, 부서 테이블 쪽에 (+)를 붙인다. 이는 LEFT OUTER JOIN과 동일하다.",
+    "tags": ["JOIN", "OUTER JOIN", "Oracle"],
+    "difficulty": "상"
+  },
+  {
+    "id": "p2c1_012",
+    "part": 2,
+    "chapter": "1",
+    "content": "서브쿼리의 위치에 따른 분류에서 FROM 절에 위치한 서브쿼리를 무엇이라 하는가?",
+    "options": [
+      "스칼라 서브쿼리",
+      "상관 서브쿼리",
+      "인라인 뷰",
+      "중첩 서브쿼리"
+    ],
+    "answer": 3,
+    "explanation": "서브쿼리의 위치에 따른 분류: SELECT 절 = 스칼라 서브쿼리(단일 값 반환), FROM 절 = 인라인 뷰(가상 테이블로 사용), WHERE 절 = 중첩 서브쿼리(조건에 사용). 상관 서브쿼리는 외부 쿼리의 값을 참조하는 서브쿼리로, 위치에 따른 분류가 아닌 동작 방식에 따른 분류이다.",
+    "tags": ["서브쿼리", "인라인뷰"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_013",
+    "part": 2,
+    "chapter": "1",
+    "content": "트랜잭션의 특성(ACID)에 해당하지 않는 것은?",
+    "options": [
+      "원자성 (Atomicity)",
+      "일관성 (Consistency)",
+      "독립성 (Independence)",
+      "지속성 (Durability)"
+    ],
+    "answer": 3,
+    "explanation": "트랜잭션의 ACID 특성은 원자성(Atomicity: 전부 실행 또는 전부 미실행), 일관성(Consistency: 데이터 무결성 유지), 격리성(Isolation: 트랜잭션 간 독립), 지속성(Durability: 완료 결과의 영구 반영)이다. 독립성이 아닌 격리성(Isolation)이 올바른 표현이다.",
+    "tags": ["트랜잭션", "ACID"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_014",
+    "part": 2,
+    "chapter": "1",
+    "content": "SAVEPOINT에 대한 설명으로 올바른 것은?",
+    "options": [
+      "트랜잭션의 모든 변경 사항을 취소한다",
+      "트랜잭션의 모든 변경 사항을 영구 저장한다",
+      "트랜잭션 내에서 중간 저장점을 설정하여 부분 롤백이 가능하다",
+      "자동 커밋(AUTO COMMIT)을 설정한다"
+    ],
+    "answer": 3,
+    "explanation": "SAVEPOINT는 트랜잭션 내에서 중간 저장점을 설정하여 해당 지점까지만 롤백할 수 있도록 한다. 전체 롤백은 ROLLBACK, 전체 영구 저장은 COMMIT이다. ROLLBACK TO SAVEPOINT명 으로 특정 저장점까지만 부분 롤백이 가능하다.",
+    "tags": ["TCL", "SAVEPOINT"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_015",
+    "part": 2,
+    "chapter": "1",
+    "content": "CASE 표현식에 대한 설명으로 올바르지 않은 것은?",
+    "options": [
+      "IF-THEN-ELSE 논리를 SQL에서 표현할 수 있다",
+      "CASE 표현식은 SELECT, WHERE, ORDER BY 절에서 모두 사용 가능하다",
+      "ELSE 절이 없을 때 조건에 맞지 않으면 오류가 발생한다",
+      "Oracle의 DECODE 함수와 유사한 기능을 한다"
+    ],
+    "answer": 3,
+    "explanation": "CASE 표현식에서 ELSE 절이 없을 때 조건에 맞지 않으면 오류가 발생하지 않고 NULL을 반환한다. CASE 표현식은 IF-THEN-ELSE 논리를 SQL에서 표현하며, SELECT/WHERE/ORDER BY 등 다양한 절에서 사용 가능하고, Oracle의 DECODE 함수와 유사한 기능을 한다.",
+    "tags": ["CASE", "조건표현식"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_016",
+    "part": 2,
+    "chapter": "1",
+    "content": "다음 SQL에서 실행 결과로 올바른 것은?\n\n```sql\nSELECT SUBSTR('ABCDEFG', 3, 4) FROM DUAL;\n```",
+    "options": [
+      "ABC",
+      "CDEF",
+      "DEFG",
+      "BCD"
+    ],
+    "answer": 2,
+    "explanation": "SUBSTR(문자열, 시작위치, 길이) 함수는 지정한 시작 위치부터 지정한 길이만큼 문자열을 추출한다. Oracle의 SUBSTR은 1부터 시작(1-based)이므로 SUBSTR('ABCDEFG', 3, 4)는 3번째 문자 'C'부터 4글자인 'CDEF'를 반환한다.",
+    "tags": ["문자함수", "SUBSTR"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_017",
+    "part": 2,
+    "chapter": "1",
+    "content": "다음 조건절에서 연산자 우선순위가 올바르게 적용된 결과를 고르시오.\n\n```sql\nWHERE 부서코드 = 'A' OR 부서코드 = 'B' AND 급여 > 300\n```",
+    "options": [
+      "(부서코드='A' OR 부서코드='B') AND 급여>300",
+      "부서코드='A' OR (부서코드='B' AND 급여>300)",
+      "AND와 OR의 우선순위가 동일하여 왼쪽부터 처리",
+      "OR가 AND보다 우선순위가 높다"
+    ],
+    "answer": 2,
+    "explanation": "논리 연산자의 우선순위는 NOT > AND > OR 순이다. 따라서 AND가 OR보다 먼저 실행된다. 위 조건절은 '부서코드=A' OR '(부서코드=B AND 급여>300)'으로 처리된다. 부서가 A이거나, (부서가 B이고 급여가 300 초과인) 직원이 선택된다.",
+    "tags": ["WHERE", "연산자우선순위"],
+    "difficulty": "상"
+  },
+  {
+    "id": "p2c1_018",
+    "part": 2,
+    "chapter": "1",
+    "content": "BETWEEN 연산자에 대한 설명으로 올바른 것은?",
+    "options": [
+      "경계값을 포함하지 않는다",
+      "경계값을 포함한다 (>= AND <=)",
+      "왼쪽 경계값만 포함한다 (>= AND <)",
+      "오른쪽 경계값만 포함한다 (> AND <=)"
+    ],
+    "answer": 2,
+    "explanation": "BETWEEN A AND B는 'A 이상이고 B 이하'를 의미하며 경계값 A와 B를 모두 포함한다. 즉, >= A AND <= B와 동일하다. 예를 들어 WHERE 급여 BETWEEN 3000000 AND 5000000은 급여가 3000000 이상이고 5000000 이하인 행을 조회한다.",
+    "tags": ["BETWEEN", "비교연산자"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c1_019",
+    "part": 2,
+    "chapter": "1",
+    "content": "다음 SQL에서 실행 결과에 영향을 주지 않는 것은?\n\n```sql\nSELECT DISTINCT 부서코드\n  FROM 직원\n ORDER BY 부서코드;\n```",
+    "options": [
+      "DISTINCT",
+      "ORDER BY",
+      "테이블명",
+      "FROM 키워드 자체"
+    ],
+    "answer": 4,
+    "explanation": "이 문제는 각 요소가 결과에 영향을 주는지 묻는 것으로, FROM 키워드 자체는 SQL 문법상 필수 요소이지만 FROM 키워드를 제거하면 오류가 발생한다는 점에서 해석이 필요하다. 하지만 FROM 키워드는 문법 구조로서 데이터 선택 로직에 직접 영향을 주지 않는다. DISTINCT는 중복 제거, ORDER BY는 정렬 방식에 영향을 준다.",
+    "tags": ["SELECT", "DISTINCT"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_020",
+    "part": 2,
+    "chapter": "1",
+    "content": "다음 SQL 중 올바르지 않은 것은?",
+    "options": [
+      "SELECT * FROM 직원 WHERE 급여 IS NULL;",
+      "SELECT * FROM 직원 WHERE 급여 = NULL;",
+      "SELECT * FROM 직원 WHERE 급여 IS NOT NULL;",
+      "SELECT NVL(급여, 0) FROM 직원;"
+    ],
+    "answer": 2,
+    "explanation": "NULL 비교에는 반드시 IS NULL 또는 IS NOT NULL을 사용해야 한다. 'WHERE 급여 = NULL'은 문법상 오류는 아니지만 항상 FALSE를 반환하여 아무 행도 조회되지 않는다. NULL과의 비교는 = 연산자로 수행할 수 없다.",
+    "tags": ["NULL", "IS NULL"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c1_021",
+    "part": 2,
+    "chapter": "1",
+    "content": "다음 SQL의 실행 결과는?\n\n```sql\nSELECT TRUNC(456.789, -2) FROM DUAL;\n```",
+    "options": [
+      "456",
+      "400",
+      "456.78",
+      "500"
+    ],
+    "answer": 2,
+    "explanation": "TRUNC(숫자, 자릿수) 함수에서 자릿수가 음수이면 정수 부분에서 절삭한다. TRUNC(456.789, -2)는 백의 자리에서 절삭하므로 400이 된다. TRUNC(456.789, -1)이면 460, TRUNC(456.789, 0)이면 456이 된다.",
+    "tags": ["숫자함수", "TRUNC"],
+    "difficulty": "상"
+  },
+  {
+    "id": "p2c1_022",
+    "part": 2,
+    "chapter": "1",
+    "content": "EXISTS 서브쿼리에 대한 설명으로 올바른 것은?",
+    "options": [
+      "서브쿼리의 결과 행 수가 정확히 1개일 때만 TRUE를 반환한다",
+      "서브쿼리 결과에 행이 하나라도 존재하면 TRUE를 반환한다",
+      "서브쿼리 결과의 특정 값과 비교하여 일치하면 TRUE를 반환한다",
+      "서브쿼리 결과가 NULL을 포함하면 항상 FALSE를 반환한다"
+    ],
+    "answer": 2,
+    "explanation": "EXISTS는 서브쿼리 결과에 행이 하나라도 존재하면 TRUE를 반환한다. 행의 값이 무엇인지는 관계없으며, 실제로 EXISTS 서브쿼리에서는 SELECT 1이나 SELECT *를 주로 사용한다. NOT EXISTS는 서브쿼리 결과에 행이 없을 때 TRUE를 반환한다.",
+    "tags": ["서브쿼리", "EXISTS"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_023",
+    "part": 2,
+    "chapter": "1",
+    "content": "INSERT INTO 문에 대한 설명으로 올바르지 않은 것은?",
+    "options": [
+      "특정 컬럼만 지정하여 데이터를 삽입할 수 있다",
+      "서브쿼리를 이용하여 여러 행을 한 번에 삽입할 수 있다",
+      "모든 컬럼에 값을 넣을 때는 컬럼 목록을 생략할 수 있다",
+      "DEFAULT 값이 설정된 컬럼에는 반드시 값을 명시해야 한다"
+    ],
+    "answer": 4,
+    "explanation": "DEFAULT 값이 설정된 컬럼은 INSERT 시 값을 명시하지 않아도 자동으로 기본값이 입력된다. 또한 특정 컬럼만 지정하여 삽입 가능하고, SELECT 결과로 여러 행을 한 번에 삽입 가능하며, 모든 컬럼 값을 넣을 때는 컬럼 목록 생략이 가능하다.",
+    "tags": ["DML", "INSERT"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_024",
+    "part": 2,
+    "chapter": "1",
+    "content": "GRANT 문에 대한 설명으로 올바른 것은?",
+    "options": [
+      "GRANT는 DML에 속하며 데이터 조작 권한을 부여한다",
+      "WITH GRANT OPTION을 사용하면 권한을 받은 사용자도 다른 사용자에게 해당 권한을 부여할 수 있다",
+      "GRANT로 부여된 권한은 ROLLBACK으로 취소할 수 있다",
+      "GRANT는 특정 사용자에게만 권한을 부여할 수 있으며 PUBLIC 사용은 불가하다"
+    ],
+    "answer": 2,
+    "explanation": "WITH GRANT OPTION을 사용하면 권한을 받은 사용자도 제3자에게 동일한 권한을 부여할 수 있다. GRANT는 DDL이 아닌 DCL에 속하며, DCL 명령은 AUTO COMMIT되어 ROLLBACK으로 취소할 수 없다. GRANT ... TO PUBLIC으로 모든 사용자에게 권한을 부여할 수 있다.",
+    "tags": ["DCL", "GRANT"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_025",
+    "part": 2,
+    "chapter": "1",
+    "content": "SELF JOIN에 대한 설명으로 올바른 것은?",
+    "options": [
+      "서로 다른 두 테이블을 조인하는 방식이다",
+      "동일한 테이블을 서로 다른 별명으로 조인하는 방식이다",
+      "외부 조인의 특수한 형태이다",
+      "카테시안 곱을 생성하는 조인 방식이다"
+    ],
+    "answer": 2,
+    "explanation": "SELF JOIN은 동일한 테이블을 서로 다른 별명(ALIAS)으로 참조하여 조인하는 방식이다. 주로 계층적 구조(예: 직원-관리자 관계, 부서-상위부서 관계)를 처리할 때 사용한다. 카테시안 곱은 CROSS JOIN이다.",
+    "tags": ["JOIN", "SELF JOIN"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_026",
+    "part": 2,
+    "chapter": "1",
+    "content": "다음 SQL 중 AVG 함수 결과가 다른 하나는?\n\n(급여 데이터: 1000, 2000, NULL, 3000)",
+    "options": [
+      "SELECT AVG(급여) FROM 직원;",
+      "SELECT SUM(급여)/COUNT(급여) FROM 직원;",
+      "SELECT SUM(급여)/COUNT(*) FROM 직원;",
+      "SELECT (1000+2000+3000)/3 FROM DUAL;"
+    ],
+    "answer": 3,
+    "explanation": "AVG(급여)는 NULL을 제외한 3개 행의 합계 6000을 3으로 나눠 2000을 반환한다. SUM(급여)/COUNT(급여)도 6000/3=2000이다. SUM(급여)/COUNT(*)는 6000/4=1500으로 다르다(COUNT(*)는 NULL 포함 4행). 이처럼 AVG와 SUM/COUNT(*)의 결과는 NULL 처리 방식 차이로 달라질 수 있다.",
+    "tags": ["집계함수", "AVG", "NULL"],
+    "difficulty": "상"
+  },
+  {
+    "id": "p2c1_027",
+    "part": 2,
+    "chapter": "1",
+    "content": "다음 CASE 문에서 급여가 0인 경우의 반환값은?\n\n```sql\nSELECT CASE\n           WHEN 급여 > 5000000 THEN '고액'\n           WHEN 급여 > 3000000 THEN '중간'\n           WHEN 급여 > 0 THEN '일반'\n       END AS 급여등급\n  FROM 직원;\n```",
+    "options": [
+      "고액",
+      "일반",
+      "NULL",
+      "오류 발생"
+    ],
+    "answer": 3,
+    "explanation": "CASE 표현식에서 ELSE 절이 없을 때 어떤 조건도 만족하지 않으면 NULL을 반환한다. 급여가 0인 경우 '급여 > 5000000', '급여 > 3000000', '급여 > 0' 중 어느 것도 만족하지 않으므로 NULL이 반환된다.",
+    "tags": ["CASE", "NULL"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_028",
+    "part": 2,
+    "chapter": "1",
+    "content": "다음 중 CROSS JOIN의 결과 행 수로 올바른 것은?\n\n(테이블A: 5행, 테이블B: 4행)",
+    "options": [
+      "5행",
+      "4행",
+      "9행",
+      "20행"
+    ],
+    "answer": 4,
+    "explanation": "CROSS JOIN(카테시안 곱)은 두 테이블의 모든 행의 조합을 반환한다. 테이블A(5행) × 테이블B(4행) = 20행이 반환된다. WHERE 절 없이 테이블을 조인하면 의도치 않은 CROSS JOIN이 발생할 수 있으므로 주의해야 한다.",
+    "tags": ["JOIN", "CROSS JOIN"],
+    "difficulty": "하"
+  },
+  {
+    "id": "p2c1_029",
+    "part": 2,
+    "chapter": "1",
+    "content": "NULLIF 함수의 동작으로 올바른 것은?",
+    "options": [
+      "첫 번째 인수가 NULL이면 두 번째 인수를 반환한다",
+      "두 인수가 같으면 NULL을 반환하고, 다르면 첫 번째 인수를 반환한다",
+      "두 인수가 같으면 첫 번째 인수를 반환하고, 다르면 NULL을 반환한다",
+      "NULL이 아닌 첫 번째 인수를 반환한다"
+    ],
+    "answer": 2,
+    "explanation": "NULLIF(expr1, expr2)는 두 인수가 같으면 NULL을 반환하고, 다르면 첫 번째 인수(expr1)를 반환한다. 예를 들어 NULLIF(0, 0)은 NULL을 반환하고, NULLIF(1, 0)은 1을 반환한다. NULL이 아닌 첫 번째 인수를 반환하는 것은 COALESCE 함수이다.",
+    "tags": ["NULL함수", "NULLIF"],
+    "difficulty": "중"
+  },
+  {
+    "id": "p2c1_030",
+    "part": 2,
+    "chapter": "1",
+    "content": "DDL 실행 시 자동 COMMIT이 발생하는 이유로 올바른 것은?",
+    "options": [
+      "DDL은 DML보다 중요하기 때문에 자동으로 저장된다",
+      "DDL은 데이터베이스 구조를 변경하는 명령으로, 실행 즉시 반영되어야 하기 때문이다",
+      "DDL은 DCL과 동일한 처리 방식을 따르기 때문이다",
+      "DDL 실행 전에 DML로 변경된 내용은 자동으로 취소된다"
+    ],
+    "answer": 2,
+    "explanation": "DDL(CREATE, ALTER, DROP, TRUNCATE)은 데이터베이스의 구조를 변경하는 명령으로, 실행 즉시 반영되어야 하므로 AUTO COMMIT이 적용된다. 따라서 DDL 실행 전에 수행한 DML 작업도 함께 커밋된다는 점을 주의해야 한다. 롤백이 불가능하다.",
+    "tags": ["DDL", "AUTO COMMIT", "TCL"],
+    "difficulty": "중"
+  }
+]
