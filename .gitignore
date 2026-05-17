@@ -32,3 +32,7 @@ Thumbs.db
 
 # 로컬 전용 Claude 설정
 .claude/settings.local.json
+
+# 세션 기록 (토큰 등 민감 정보 포함)
+docs/journal/history2.md
+docs/journal/.sessions
