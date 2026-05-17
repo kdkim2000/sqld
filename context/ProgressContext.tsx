@@ -12,6 +12,7 @@ import {
 interface ProgressContextValue {
   progress: ProgressStore
   stats: Stats
+  isHydrated: boolean
   markAnswer: (id: string, result: AnswerResult) => void
   toggleBookmark: (id: string) => void
   resetProgress: () => void
@@ -38,11 +39,13 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
     byChapter: {},
     byPart: { 1: { total: 0, correct: 0, attempted: 0 }, 2: { total: 0, correct: 0, attempted: 0 } },
   })
+  const [isHydrated, setIsHydrated] = useState(false)
 
   useEffect(() => {
     const stored = loadProgress()
     setProgress(stored)
     setStats(getStats())
+    setIsHydrated(true)
   }, [])
 
   const refresh = useCallback(() => {
@@ -80,7 +83,7 @@ export function ProgressProvider({ children }: { children: React.ReactNode }) {
   const getHearts = useCallback(() => 3, [])
 
   return (
-    <ProgressContext.Provider value={{ progress, stats, markAnswer, toggleBookmark, resetProgress, isBookmarked, getStreak, getXP, getGems, getHearts }}>
+    <ProgressContext.Provider value={{ progress, stats, isHydrated, markAnswer, toggleBookmark, resetProgress, isBookmarked, getStreak, getXP, getGems, getHearts }}>
       {children}
     </ProgressContext.Provider>
   )

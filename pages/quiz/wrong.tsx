@@ -8,7 +8,7 @@ import { useProgress } from '@/context/ProgressContext'
 import type { Question, AnswerResult } from '@/types'
 
 export default function WrongPage() {
-  const { progress, markAnswer, toggleBookmark, isBookmarked } = useProgress()
+  const { progress, isHydrated, markAnswer, toggleBookmark, isBookmarked } = useProgress()
 
   const [questions, setQuestions] = useState<Question[]>([])
   const [loaded, setLoaded] = useState(false)
@@ -17,9 +17,10 @@ export default function WrongPage() {
   const [sessionAnswers, setSessionAnswers] = useState<(AnswerResult | null)[]>([])
   const [completed, setCompleted] = useState(false)
 
-  // 클라이언트 사이드에서만 localStorage 접근
+  // isHydrated가 true가 된 최초 1회만 세션을 초기화
+  // progress.answers를 의존성에서 제거하여 markAnswer 호출 시 재초기화 방지
   useEffect(() => {
-    if (typeof window === 'undefined') return
+    if (!isHydrated) return
     const wrongIds = Object.entries(progress.answers)
       .filter(([, result]) => result === 'wrong')
       .map(([id]) => id)
@@ -28,7 +29,8 @@ export default function WrongPage() {
     setSelectedOptions(Array(qs.length).fill(null))
     setSessionAnswers(Array(qs.length).fill(null))
     setLoaded(true)
-  }, [progress.answers])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isHydrated])
 
   const handleAnswer = useCallback(
     (result: AnswerResult, selectedIndex: number) => {
