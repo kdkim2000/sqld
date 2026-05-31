@@ -37,3 +37,10 @@ Thumbs.db
 docs/journal/history.md
 docs/journal/history2.md
 docs/journal/.sessions
+
+docs/contents/
+
+# 중간 산출물 (PDF 추출 텍스트, 백업)
+scripts/exam1_raw.txt
+scripts/exam2_raw.txt
+data/questions/backup/

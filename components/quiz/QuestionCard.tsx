@@ -1,5 +1,8 @@
 import { useEffect } from 'react'
-import type { Question, AnswerResult } from '@/types'
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
+import type { Question, AnswerResult, QuestionType } from '@/types'
 
 interface QuestionCardProps {
   question: Question
@@ -17,6 +20,19 @@ const DIFFICULTY_COLOR: Record<string, string> = {
   '하': 'bg-mint-50 text-mint-600',
   '중': 'bg-sun-light text-sun',
   '상': 'bg-coral-light text-coral',
+}
+
+const TYPE_LABEL: Record<QuestionType, string> = {
+  concept:    '개념',
+  result:     'SQL결과',
+  completion: '구문완성',
+  error:      '오류탐색',
+}
+const TYPE_COLOR: Record<QuestionType, string> = {
+  concept:    'bg-primary-50 text-primary-700',
+  result:     'bg-blue-50 text-blue-700',
+  completion: 'bg-amber-50 text-amber-700',
+  error:      'bg-red-50 text-red-600',
 }
 
 export default function QuestionCard({
@@ -75,6 +91,16 @@ export default function QuestionCard({
               {DIFFICULTY_LABEL[difficulty] ?? difficulty}
             </span>
           )}
+          {question.questionType && question.questionType !== 'concept' && (
+            <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${TYPE_COLOR[question.questionType]}`}>
+              {TYPE_LABEL[question.questionType]}
+            </span>
+          )}
+          {question.source && question.source !== 'chapter' && (
+            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-teal-50 text-teal-700">
+              {question.source === 'mockexam1' ? '예상1회' : '예상2회'}
+            </span>
+          )}
           {question.tags && question.tags.length > 0 && (
             <span className="text-xs px-2 py-0.5 rounded-full" style={{ backgroundColor: 'var(--q-surface-soft)', color: 'var(--q-ink-3)' }}>
               {question.tags[0]}
@@ -97,9 +123,11 @@ export default function QuestionCard({
       </div>
 
       {/* 문제 본문 */}
-      <p className="font-medium text-base leading-relaxed mb-6 whitespace-pre-wrap" style={{ color: 'var(--q-ink)' }}>
-        {question.content}
-      </p>
+      <div className="prose-quiz font-medium mb-6">
+        <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+          {question.content}
+        </ReactMarkdown>
+      </div>
 
       {/* 선택지 */}
       <div className="space-y-2">

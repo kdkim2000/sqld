@@ -1,3 +1,6 @@
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
+import rehypeHighlight from 'rehype-highlight'
 import type { Question, AnswerResult } from '@/types'
 
 interface AnswerFeedbackProps {
@@ -83,9 +86,11 @@ export default function AnswerFeedback({
         <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">
           해설
         </p>
-        <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
-          {question.explanation}
-        </p>
+        <div className="prose-quiz text-sm text-gray-700">
+          <ReactMarkdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeHighlight]}>
+            {question.explanation}
+          </ReactMarkdown>
+        </div>
       </div>
 
       {/* 다음 문제 버튼 */}

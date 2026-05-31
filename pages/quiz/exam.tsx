@@ -6,17 +6,26 @@ import QuizNavigator from '@/components/quiz/QuizNavigator'
 import ExamTimer from '@/components/quiz/ExamTimer'
 import { useProgress } from '@/context/ProgressContext'
 import { saveExamResult } from '@/lib/progress'
-import { sampleExamQuestions } from '@/lib/questions'
+import { sampleExamQuestions, sampleMixedExam, getMockExamQuestions } from '@/lib/questions'
 import type { Question, AnswerResult, ExamResult } from '@/types'
 
 const EXAM_DURATION = 90 * 60
 
 type ExamPhase = 'ready' | 'ongoing' | 'result'
+type ExamSource = 'mixed' | 'chapter' | 'exam1' | 'exam2'
+
+const SOURCE_OPTIONS: { value: ExamSource; label: string; desc: string }[] = [
+  { value: 'mixed',   label: '혼합 랜덤',   desc: '챕터+모의고사 전체 ~215문에서 무작위' },
+  { value: 'chapter', label: '챕터 문제',   desc: '단원별 학습 문제만 (115문 풀)' },
+  { value: 'exam1',   label: '모의고사 1회', desc: '출제예상 1회 50문 순서대로' },
+  { value: 'exam2',   label: '모의고사 2회', desc: '출제예상 2회 50문 순서대로' },
+]
 
 export default function ExamPage() {
   const { markAnswer, toggleBookmark, isBookmarked } = useProgress()
 
   const [phase, setPhase]                 = useState<ExamPhase>('ready')
+  const [selectedSource, setSelectedSource] = useState<ExamSource>('mixed')
   const [questions, setQuestions]         = useState<Question[]>([])
   const [currentIndex, setCurrentIndex]   = useState(0)
   const [selectedOptions, setSelectedOptions] = useState<number[]>([])
@@ -27,12 +36,16 @@ export default function ExamPage() {
 
   useEffect(() => {
     if (phase === 'ongoing' && questions.length === 0) {
-      const qs = sampleExamQuestions()
+      let qs: Question[]
+      if (selectedSource === 'chapter')  qs = sampleExamQuestions()
+      else if (selectedSource === 'exam1') qs = getMockExamQuestions(1)
+      else if (selectedSource === 'exam2') qs = getMockExamQuestions(2)
+      else                                 qs = sampleMixedExam()
       setQuestions(qs)
       setSelectedOptions(Array(qs.length).fill(0))
       setSessionAnswers(Array(qs.length).fill(null))
     }
-  }, [phase, questions.length])
+  }, [phase, questions.length, selectedSource])
 
   const handleStart = useCallback(() => {
     startTimeRef.current = Date.now()
@@ -85,22 +98,51 @@ export default function ExamPage() {
       <>
         <Head><title>모의고사 | SQLD Quest</title></Head>
         <div className="p-4 md:p-6 max-w-lg mx-auto">
-          <div className="q-card p-8 text-center">
-            {/* 아이콘 */}
-            <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-primary-50">
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
+          <div className="q-card p-8">
+            {/* 헤더 */}
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 bg-primary-50">
+                <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+              </div>
+              <h1 className="font-display font-bold text-2xl mb-1" style={{ color: 'var(--q-ink)' }}>SQLD 모의고사</h1>
+              <p className="text-sm" style={{ color: 'var(--q-ink-2)' }}>1과목 10문항 + 2과목 40문항 · 90분</p>
             </div>
 
-            <h1 className="font-display font-bold text-2xl mb-2" style={{ color: 'var(--q-ink)' }}>SQLD 모의고사</h1>
-            <p className="text-sm mb-6" style={{ color: 'var(--q-ink-2)' }}>
-              1과목 10문항 + 2과목 40문항 = 총 50문항<br />
-              제한 시간: 90분
-            </p>
+            {/* 출제 방식 선택 */}
+            <div className="mb-5">
+              <p className="text-xs font-semibold mb-2" style={{ color: 'var(--q-ink-3)' }}>출제 방식 선택</p>
+              <div className="space-y-2">
+                {SOURCE_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => setSelectedSource(opt.value)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl border-2 text-left transition-colors ${
+                      selectedSource === opt.value
+                        ? 'border-primary-500 bg-primary-50'
+                        : 'border-transparent hover:border-primary-200'
+                    }`}
+                    style={selectedSource !== opt.value ? { backgroundColor: 'var(--q-surface-soft)' } : undefined}
+                  >
+                    <span className={`w-4 h-4 rounded-full border-2 flex-shrink-0 flex items-center justify-center ${
+                      selectedSource === opt.value ? 'border-primary-600' : 'border-gray-300'
+                    }`}>
+                      {selectedSource === opt.value && (
+                        <span className="w-2 h-2 rounded-full bg-primary-600" />
+                      )}
+                    </span>
+                    <span>
+                      <span className="text-sm font-semibold block" style={{ color: 'var(--q-ink)' }}>{opt.label}</span>
+                      <span className="text-xs" style={{ color: 'var(--q-ink-3)' }}>{opt.desc}</span>
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
 
             {/* 합격 기준 */}
-            <div className="rounded-2xl p-4 mb-6 text-left bg-primary-50">
+            <div className="rounded-2xl p-4 mb-5 text-left bg-primary-50">
               <h2 className="font-semibold text-primary-800 mb-2 text-sm">합격 기준</h2>
               <ul className="text-sm text-primary-700 space-y-1">
                 <li>• 총점 60점 이상</li>
@@ -115,7 +157,7 @@ export default function ExamPage() {
             >
               시험 시작
             </button>
-            <Link href="/quiz" className="block mt-3 text-sm hover:underline" style={{ color: 'var(--q-ink-3)' }}>
+            <Link href="/quiz" className="block mt-3 text-sm text-center hover:underline" style={{ color: 'var(--q-ink-3)' }}>
               돌아가기
             </Link>
           </div>

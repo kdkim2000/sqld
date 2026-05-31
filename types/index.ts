@@ -1,3 +1,7 @@
+export type QuestionType = 'concept' | 'result' | 'completion' | 'error'
+
+export type QuestionSource = 'chapter' | 'mockexam1' | 'mockexam2'
+
 export interface Question {
   id: string
   part: 1 | 2
@@ -8,6 +12,8 @@ export interface Question {
   explanation: string
   tags?: string[]
   difficulty?: '하' | '중' | '상'
+  questionType?: QuestionType
+  source?: QuestionSource
 }
 
 export type AnswerResult = 'correct' | 'wrong' | 'skipped'
