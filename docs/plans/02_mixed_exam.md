@@ -16,13 +16,13 @@
 
 | Phase | 작업 | 상태 |
 |-------|------|------|
-| 0 | pdf-to-markdown 스킬 + Python PDF 가용성 확인 | 🔄 진행 중 |
-| 1 | `data/mockexam/exam1.json`, `exam2.json` 생성 (각 50문) | ⏳ 대기 |
-| 2 | `types/index.ts` — `QuestionSource` 타입 추가 | ⏳ 대기 |
-| 3 | `lib/questions.ts` — 혼합 샘플링 함수 3개 추가 | ⏳ 대기 |
-| 4 | `pages/quiz/exam.tsx` — 소스 선택 UI + 분기 로직 | ⏳ 대기 |
-| 5 | `components/quiz/QuestionCard.tsx` — source 배지 | ⏳ 대기 |
-| 6 | QA (`/build-check` + `/validate-data`) | ⏳ 대기 |
+| 0 | pdf-to-markdown 스킬 + Python PDF 가용성 확인 | ✅ 완료 |
+| 1 | `data/mockexam/exam1.json`, `exam2.json` 생성 (각 50문) | ✅ 완료 |
+| 2 | `types/index.ts` — `QuestionSource` 타입 추가 | ✅ 완료 |
+| 3 | `lib/questions.ts` — 혼합 샘플링 함수 3개 추가 | ✅ 완료 |
+| 4 | `pages/quiz/exam.tsx` — 소스 선택 UI + 분기 로직 | ✅ 완료 |
+| 5 | `components/quiz/QuestionCard.tsx` — source 배지 | ✅ 완료 |
+| 6 | QA (`/build-check`) — tsc + lint + build 모두 통과 | ✅ 완료 |
 
 ---
 
