@@ -215,7 +215,7 @@
       "10, 20, 30",
       "20"
     ],
-    "answer": 2,
+    "answer": 4,
     "explanation": "COUNT(SAL)은 NULL이 아닌 SAL 값의 수를 세므로: DEPTNO 10 → COUNT(SAL)=1(NULL 1개 제외), DEPTNO 20 → COUNT(SAL)=2, DEPTNO 30 → COUNT(SAL)=1. HAVING COUNT(SAL) >= 2 조건을 만족하는 것은 DEPTNO 20뿐이다. 따라서 결과는 20 한 행이다.",
     "tags": ["HAVING", "COUNT", "NULL", "GROUP BY"],
     "difficulty": "상"
